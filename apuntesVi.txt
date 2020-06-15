@@ -1,0 +1,178 @@
+﻿fi
+
+Configuracion de vi:
+	Archivo .exrc en directorio de trabajo para que sea fijo
+    	:set [opcion] para que solo sea para la sesion en curso
+	Opciones:
+	    nu (muestra numero de lineas)
+	    ai (alinea nueva linea con linea anterior)
+	    ic (deja de ser keysensitive durante las busquedas)
+	    smd (Visualiza el modo actual e vi en la esquina iferior derecha)
+	    wm (margen salto)
+
+Formato de una orden:
+	[#1] operación [#2] blanco
+		todo lo que aparezca entre [] es opcional
+	#1:
+		número opcional que especifica el número de operaciones a realizar
+	operación:
+		es lo que se quiere hacer
+	#2:
+		número opcional que especifica el número de blancos afectados por la
+		operación
+	blanco:
+		es l texto al que se le deséa aplicar la operación, como una línea
+		compleata de texto
+
+Modo de inserción:
+	a (Añade texto despues de la letra en que esta el cursor)
+	A (Añade texto tras la ultima letra de la línea actual)
+	c (da comienzo a una operación de cambio, permitiendo modificar texto)
+	C (Mueve el cursor al princiopio de la linea)
+	i (insertar texto delante del cursor)
+	I (insertar texto al principio de la linea actual)
+	o (Abre una linea en blanco y pone el cursor debajo de la linea actual)
+	O (Abre una linea en blanco y pone el cursor por ensima de la linea actual)
+	R (sobreescribe texto)
+	s (remplaz carateres individuales)
+	S (remplaza lineas compleatas)
+
+Ordenes importantes del modo ordenes:
+	d (Borra palabras, lineas, etc)
+	u (Deshace la última modificación )
+	p (Pega despues de la linea en curso las lineas borradas)
+	P (Pega antes de la linea en curso las lineas borradas)
+	:r 
+		nombreArchivo (lee e inserta el contenido del archivo nombreArchivo 
+		en la posision actual del cursor)
+	:q! (Sale de vi sin guardar el bufer)
+	:wq (Guarda el bufer y sale de vi)
+	:w nombreArchivo (guarda el bufer actual en nombreArchivo)
+	:w! 
+		nombreArchivo (escribe l texto actual ensima del que hubiera en
+		nombreArchivo)
+	ZZ
+		Abandona vi guardando el archivo solo si se han hecho cambios desde
+		la última vez que se ha guardado el archivo.
+	:! comando (permite ejecutar comando de las shell sin salir de vi)
+	:r arch2      insertar un archivo
+	:e arch2      editar un nuevo archivo
+	:e! arch2     idem sin salvar anterior
+Ejemplos de sintaxis de ordenes:
+	x borra el caracter sobre el cursor 
+	dw borra una palabra
+	u deshace último cambio 
+	5dw (borra 5 palabras desde la posision actual del cursor)
+	7dd (Borra siete lineas empezando de la linea actual)
+	7o (Abre 7 lineas en blanco despues de la linea actual)
+	7O (Abre 7 lineas en blanco antes de la linea actual) 
+	c2b (deshace el cambio en dos palabras)
+	d7,14 (borra las lineas de la 7 a la 14 en el bufer)
+	1G (situa el cursor en la primer linea del archivo)
+	10yy (quita y copia las 10 lineas siguientes, empezando por la actual, y las
+	inserta en un bufer temporal) 
+	y$ copia hacia la memoria intermedia el texto desde la posición actual del cursor hasta el final de la línea.
+	y} copia hacia la memoria intermedia todo el texto comprendido entre la posición actual del cursor y el final del párrafo correspondiente.
+	:6r arch3 inserta debajo de la líne 6 el archivo arch3
+
+Ordenes de desplazamiento del cursor y de edicion:
+	7G (Desplaza el cursor a la línea 7 del archivo)
+	G (Desplaza el cursor a la última linea del archivo)
+	0 (desplaza el cursor a la primer letra de la linea actual)
+	^G (Muestra la posision del cursor en terminos de nº de linea y nº de columna)
+	$ (Desplaza el cursor hasta el ultimo caracter de la linea actual)
+	w (desplaza el cursor hacia adelante palabra por palabra)
+	b (desplaza el cursor hacia atras palabra por palabra)
+	x (borra el caracter situado en la posisión del cursor)
+	dd (borra la línea situada en la posisión del cursor)
+	borrar desde cursor a fin de línea 
+	dw    borrar desde cursor a fin de palabra
+	d$    borrar desde cursor a fin de línea
+	d0    borrar desde cursor a principio de línea
+	u (Deshace el último cambio)
+	U     deshacer todos los cambios en una línea
+	r (Cambia el caracter seleccionado en la posision actual del cursor por lo que
+	se escriba a continuación)
+
+
+Movimiento del cursor:
+
+	h o BS       una posición hacia la izquierda 
+	l o SP       una posición hacia la derecha 
+	k o -        una línea hacia arriba 
+	j o +        una línea hacia abajo 
+	$            fin de línea 
+	0            principio de línea 
+	1G           comienzo del archivo 
+	G            fin del archivo 
+	18G          línea número 18 
+	Ctrl-G       mostrar número de línea actual 
+	w            comienzo de la palabra siguiente 
+	e            fin de la palabra siguiente 
+	E            fin de la palabra siguiente antes de espacio 
+	b            principio de la palabra anterior 
+	^            primera palabra de la línea 
+	%            hasta el paréntesis que aparea 
+	H            parte superior de la pantalla 
+	L            parte inferior de la pantalla 
+	M            al medio de la pantalla 
+	23|          cursor a la columna 23
+	:1    mueve a línea 1 
+	:15   mueve a línea 15 
+	:$    mueve a última línea
+	
+Copiar y pegar
+
+	P           pegar antes del cursor 
+	p           pegar después del cursor 
+	yw          copiar palabra 
+	y$          copiar de cursor a fin de línea 
+	"ayy o "aY  copiar línea en buffer llamado 'a' 
+	'a' "ayw    copiar palabra en buffer llamado 
+	"ap         pegar desde buffer 'a', a la derecha del cursor 
+	"aP         pegar desde buffer 'a', a la izquierda del cursor 
+	"bdd        borrar línea y guardar en buffer 'b' 
+	"bdw        borrar palabra y guardar en buffer 'b'
+	c         reemplaza caracteres
+	cw        reemplaza palabras
+	C o c$    reemplaza hasta el fin de línea
+	c0        reemplaza desde el comienzo de línea
+	J     unir dos líneas en una
+95.211.109.197'
+Búsqueda
+
+	/str    buscar hacia adelante cadena de caracteres 'str'
+	?str    buscar hacia atrás cadena de caracteres 'str' 
+	n       repetir último comando / o ? 
+	N       repetir último comando / o ? para el otro lado 
+	fc      buscar el siguiente caracter 'c' en la línea 
+	Fc      buscar el anterior caracter 'c' en la línea 
+	tc      ir al caracter anterior al siguiente 'c' 
+	Tc      ir al caracter posterior al precedente 'c' 
+	;       repetir el último comando f, F, t, o T 
+	,       último comando f, F, t, o T para el otro lado
+
+Reemplazo
+
+La sintaxis del comando de búsqueda y reemplazo es la siguiente:
+	:<desde>,<hasta>s/<buscar>/<reemplazar>/g -> <desde>, <hasta> indican líneas en el archivo; <buscar> y <reemplazar> son cadenas de caracteres o expresiones regulares; / es un separador, s (sustituir) y g (global) son letras de comando para el manejo de expresiones regulares.
+	:1,$s/Martes/martes/g -> cambia Martes por martes en todo el archivo.
+	:.,5s/ayuda/&ndo/g -> cambia ayuda por ayudando desde línea actual hasta la 5a. línea.
+	:1,30s/ejemplo1/Ejemplo2/gc -> Si queremos confirmar la sustitución antes de que vi la realice se utiliza la opción c al final del commando
+	:%s/ */&&/g -> Duplica el número de espacios entre palabras.
+	:%s/^....//g -> Borra los primeros cuatro carácteres de cada línea.
+	:1,$s/s \([0-9]\)/s '\1/gc convierte "s 9" en "s '9"
+	:g/^ *$/d -> eliminar lineas en blanco
+	:g/#/d -> elimina lineas comentadas
+
+Opciones
+	:set                cambio de opciones 
+	:set nu             mostrar números de línea 
+	:set nonu           no mostrar números de línea 
+	:set showmode       mostrar modo actual de vi 
+	:set noshowmode     no mostrar modo actual de vi
+	:set ic             no case-sensitive
+	:set noic           case-sensitive
+	:set history=50      historial de hasta 50 comandos
+--------------------------------
+^L -> refresca pantalla
