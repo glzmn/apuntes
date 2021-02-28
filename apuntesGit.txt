@@ -1,59 +1,57 @@
-$git log ->
-$git log -> Muestra info de los commints de la rama en que
-estamos
+
+$git log -> Muestra info de los commints de la rama en que estamos
+
 $git log -n 2 -> Muestra los últimos dos commints
-$git log --pretty=fuller -1 -> ver en forma completa el commit
-más reciente
-$git log -1 --stat -> visualizar las estadísticas del número de líneas
-añadidas y eliminadas en las modificaciones del commit.
-$git log --oneline -5 -> para mostrar los cinco commits más
-recientes del proyecto solo en cinco líneas.
-$git log -3 --author “Pepe” -> consultar los tres últimos commits
-realizados por Pepe
-$git log -2 -- README.rst -> verificar los commits que llevan
-modificaciones del archivo README.rst
+
+$git log --pretty=fuller -1 -> ver en forma completa el commit más reciente
+
+$git log -1 --stat -> visualizar las estadísticas del número de líneas añadidas y eliminadas en las modificaciones del commit.
+
+$git log --oneline -5 -> para mostrar los cinco commits más recientes del proyecto solo en cinco líneas.
+
+$git log -3 --author “Pepe” -> consultar los tres últimos commits realizados por Pepe
+
+$git log -2 -- README.rst -> verificar los commits que llevan modificaciones del archivo README.rst
+
 $git diff -> ver las diferencias entre el directorio de trabajo y el índice
-$git diff --cached -> Este comando permite comprobar todo lo que
-se guardará justo antes de usar el comando git commit.
-$git diff HEAD -> ver las diferencias entre la última versión del
-repositorio (a la que apunta HEAD) y la versión actual en el directorio de
-trabajo
-$git reset --hard HEAD -> elimina todas las modificaciones del
-directorio de trabajo y del índice. Es irreversible; por tanto, debe
-utilizarse con mucha prudencia. Vuelve al estado del ultimo commit,
-HEAD
-$git reset HEAD -> Sin el argumento --hard, no modificará el
-directorio de trabajo. Este comando solo pondrá el índice en el mismo
-estado que la versión más reciente del repositorio. ¡Las modificaciones
-presentes en el índice se eliminarán de manera irreversible!
+
+$git diff --cached -> Este comando permite comprobar todo lo que se guardará justo antes de usar el comando git commit.
+
+$git diff HEAD -> ver las diferencias entre la última versión del repositorio (a la que apunta HEAD) y la versión actual en el directorio de trabajo
+
+$git reset --hard HEAD -> elimina todas las modificaciones del directorio de trabajo y del índice. Es irreversible; por tanto, debe utilizarse con mucha prudencia. Vuelve al estado del ultimo commit, HEAD
+
+$git reset HEAD -> Sin el argumento --hard, no modificará el directorio de trabajo. Este comando solo pondrá el índice en el mismo estado que la versión más reciente del repositorio. ¡Las modificaciones presentes en el índice se eliminarán de manera irreversible!
+
 $git branch -> mostrar ramas existentes
-* master -> solo existe la rama master y el asterisco
-indica que es la rama actual
-$git branch -v -> mostrar la lista de las ramas con el hash y el
-mensaje del último commit de cada rama
-$git check-ref-format --branch nombre_rama -> verificar si un
-nombre de rama es válido
+* master -> solo existe la rama master y el asterisco indica que es la rama actual
+
+$git branch -v -> mostrar la lista de las ramas con el hash y el mensaje del último commit de cada rama
+
+$git check-ref-format --branch nombre_rama -> verificar si un nombre de rama es válido
+
 $git branch -v -> observamos las ramas existentes
+
 $git branch ejemplo -> creamos la rama ejemplo
+
 $git status -> verificar los cambios pendientes de la rama actual
-$git stash -> cambiar de rama rápidamente sin tener tiempo de
-terminar el código en curso para hacer un commit. permite conservar
-cambios de lado para volver a un estado idéntico entre el directorio de
-trabajo y la rama HEAD. El desarrollador puede entonces volver a
-importar sus modificaciones fácilmente sin haber tenido que crear un
-commit sin terminar.
+
+$git stash -> cambiar de rama rápidamente sin tener tiempo de terminar el código en curso para hacer un commit. permite conservar cambios de lado para volver a un estado idéntico entre el directorio de trabajo y la rama HEAD. El desarrollador puede entonces volver a importar sus modificaciones fácilmente sin haber tenido que crear un commit sin terminar.
+
 $git checkout ejemplo -> permite ubicarse en la rama ejemplo
-$git checkout -b ejemplo2 -> permite crear una nueva rama y
-ubicarse en ella directamente
+
+$git checkout -b ejemplo2 -> permite crear una nueva rama y ubicarse en ella directamente
+
 $git checkout master -> se vuelve a la rama master
-$git merge ejemplo -> la rama master incorpora todos los
-commit de la rama ejemplo
+
+$git merge ejemplo -> la rama master incorpora todos los commit de la rama ejemplo
+
 $git branch -d ejemplo -> elimina la rama ejemplo
-$git remote -> tener la lista de los repositorios remotos vinculados con
-el repositorio local
-$git push origin master -> enviar al remote llamado origin las
-modificaciones añadidas en la rama master
-$git pull -> actualizar la rama actual con los commits contenidos en el
-repositorio remoto
-$git branch --all -> obtener la lista de todas las ramas (locales y
-remotas seguidas)
+
+$git remote -> tener la lista de los repositorios remotos vinculados con el repositorio local
+
+$git push origin master -> enviar al remote llamado origin las modificaciones añadidas en la rama master
+
+$git pull -> actualizar la rama actual con los commits contenidos en el repositorio remoto
+
+$git branch --all -> obtener la lista de todas las ramas (locales y remotas seguidas)
