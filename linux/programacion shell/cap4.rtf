@@ -1,0 +1,495 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red66\green66\blue66;\red255\green255\blue255;\red87\green87\blue87;
+\red66\green66\blue66;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c32941\c32941\c32941;\cssrgb\c100000\c100000\c100000;\cssrgb\c41569\c41569\c41569;
+\cssrgb\c32941\c32941\c32941;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs24 \cf0 \ul \ulc0 Variables de usuario
+\b0 \
+\ulnone ademas de las variables de entorno, en el shell existen variables de usuario que almacenan informaci\'f3n necesaria para la ejecuci\'f3n del script\
+\
+-las variables de usuario 
+\b se inicializan
+\b0  en el momento de usarlas por primera vez\
+-el contenido es un conjunto de caracteres\
+\
+$ var1=pepe -> sin espacios siempre o var1 sera interpretado como comando y = y pepe como argumentos del comando var1\
+\
+$echo $var1\
+\
+-variable nunca inicializada es una variable indefinida\
+\
+$ unset var1 -> borra la definici\'f3n de la variable var1\
+\
+$ arch=resu\
+$ fechadia=20140117\
+$ nuevoarch=$\{arch\}_$fechadia -> re usan \{\} para especificarle al shell cuales son los caracteres que forman parte de la variable, sino toma a _ como parte de la variable\
+$ echo nuevoarch\
+resu_20140117\
+\
+
+\b \ul Variables num\'e9ricas
+\b0 \ulnone \
+\
+$ typeset -i nb=1\
+\
+
+\b\fs28 \ul sustituci\'f3n de variables
+\b0\fs24 \ulnone \
+\
+
+\b \ul Expresi\'f3n $\{variable:-valor\}\
+
+\b0 \ulnone Si la variable no esta vac\'eda, la expresi\'f3n se sustituye por variable, si esta vac\'eda se sustituye por valor\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 $ echo $\{arch:-/tmp/hola.txt\}
+\b \ul \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \ulc0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \ulc0 Expresi\'f3n $\{variable:=valor\}\
+
+\b0 \ulnone Si la variable no esta vac\'eda, la expresi\'f3n se sustituye por variable, si esta vac\'eda a variable se le asigna valor y la expresi\'f3n se sustituye por variable\
+$ echo $\{arch:=/tmp/hola.txt\}\
+
+\b \ul \ulc0 \
+Expresi\'f3n $\{variable:+valor\}\
+
+\b0 \ulnone Si la variable no esta vac\'eda, la expresi\'f3n se sustituye por valor, si esta vac\'eda se sustituye por variable que esta vac\'eda\
+$ echo $\{arch:-+tmp/hola.txt\}
+\b \ul \
+\ulc0 \
+Expresi\'f3n $\{variable:?mensaje\}
+\b0 \ulnone \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 Si la variable no esta vac\'eda, la expresi\'f3n se sustituye por variable, si esta vac\'eda se sustituye por nombre de la variable seguida por mensaje$ echo $\{arch:?\'94No definida\'94\}
+\b \ul \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\fs28 \cf0 \ulc0 sustituci\'f3n de comandos\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\fs24 \cf0 invertidas `` o parentesis $()\
+\
+
+\b0 \ulnone $ echo usted es `lograme` y esta en la maquina `uname -n`
+\b \ul \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b0 \cf0 \ulnone $ echo usted es $(lograme) y esta en la maquina $(uname -n)\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b\fs28 \cf0 \ul \ulc0 caracteres de protecci\'f3n\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\fs24 \cf0 comillas simples \'91\'92 -> 
+\b0 \ulnone debiendo ser un numero par en la linea de comandos, las comillas simples eliminan todos los caracteres especiales del shell\
+\
+
+\b \ul barra invertida \\\
+\
+comillas dobles -> 
+\b0 \ulnone eliminan todos los caracteres especiales del shell exacto $, ``, $(), \\ y a si mismas\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b\fs28 \cf0 \ul \ulc0 secuencia de interpretaci\'f3n de la linea de comandos
+\fs24 \
+\
+Realizadas por el shell actual\
+1. Aislamiento de las palabras separadas por caracteres espacio, tabulacion y saltos de linea\
+2. Tratamiento de los caracteres de protecci\'f3n (\'91\'92, \'94\'94, \\)\
+3. sustituci\'f3n de variables $\
+4. Sustituci\'f3n de los comandos (``, $())\
+5. Sustituci\'f3n de los caracteres de generaci\'f3n de nombres de archivo (*, ?, [], etc)\
+6. tratamiento de las tuber\'edas y redirecciones en caso de comando internos\
+7. Ejecuci\'f3n del comando en caso de los comando internos\
+\
+Realizadas por shell hijo\
+6. tratamiento de las tuber\'edas y redirecciones en caso de comando externos\
+7. Ejecuci\'f3n del comando en caso de los comando externos\
+\
+
+\fs28 Ejecuci\'f3n de un script de shell\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b0\fs24 \cf0 \ulnone Los script e shell, al tratarse de un comando externo, se ejecutan en una shell hijo, si se cambia de directorio por ejemplo, al terminar de ejecutarse se vuelve al shell donde se ejecuto el script y el directorio no ha cambiado\
+\
+para ejecutar un script de shell en la shell actual  se usa el punto, no hace falta que script.sh tenga permisos de ejecuci\'f3n pero se debe poner ruta absoluta su sed hubicacion no esta en la variable de entorno PATH\
+\
+$ . ~/script.sh\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b\fs28 \cf0 \ul \ulc0 Variables reservadas del shell\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\fs24 \cf0 \
+Par\'e1metros posiciones\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b0 \cf0 \ulnone Recuperan los argumentos pasados por linea de comandos\
+
+\b $# -> 
+\b0 numero de argumentos\
+
+\b $0 ->
+\b0  nombre del script\
+
+\b $1 a $9 ->
+\b0  representan del primero al noveno argumento respectivamente. bash y ksh permiten leer n argumentos siempre y cuando al tener dos d\'edgitos o mas se escriban ente par\'e9ntesis $(10)\
+
+\b $* y $@ ->
+\b0  representan la lista de todos los argumentos, dse estudian en el proximo capitulo\
+
+\b $? ->
+\b0  coligo de error del ultimo comando ejecutado, va de 0 a 255, siendo 0 verdadero y del 1 al 255 falso\
+
+\b shift ->
+\b0  permite desplazar los argumentos hacia la izquierda eliminando el primero y qued\'e1ndose con argumentos n-1\
+\
+./miscript.sh hola pepe argumento 3\
+$0 -> miscript.sh\
+$1 -> hola\
+$2 -> pepe\
+$3 -> argumento\
+$4 -> 3\
+\
+si dentro de mi script.sh ejecutamos shift, queda\
+$1 -> pepe\
+$2 -> argumento\
+$3 -> 3\
+\
+exit num -> retorna un coligo de error, siendo num un numero de 0 a 255, 0 es verdadero y los dem\'e1s falso\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b \cf0 \ul \ulc0 Otras variables especiales\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b0 \cf0 \ulnone \
+$$ -> pid del shell que interpreta el script, es constante durante toda la ejecuci\'f3n\
+\
+$! -> si se ejecuta un comando en segundo plano desde el script, esta variable especial contendr\'e1 el pid del ultimo proceso ejecutado en segundo plano desde el script\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b \cf0 \ul \ulc0 Comando read\
+
+\b0 \ulnone Lee de su entrada est\'e1ndar y asigna las palabras le\'eddas a las variables que se pasan como argumento\
+Lee siempre una linea completa incluyendo el salto de linea \
+Devuelve coligo de error verdadero o 0 si no recibe informaci\'f3n de fin de archivo materializado por ^d, si el usuario al finalizar en vez de ^d pulsa enter, el c\'f3digo es verdadero pero la variable $? queda vac\'eda\
+\
+$ read var1\
+hola pepe\
+$ echo var1\
+hola pepe\
+$\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 $ read var1 var2\
+hola pepe\
+$ echo var1\
+hola \
+$ echo var2\
+pepe\
+$\
+\
+$ read var1 var2\
+hola pepe que tal\
+$ echo var1\
+hola \
+$ echo var2\
+pepe que tal\
+$\
+\
+$ read var1 var2\
+hola\
+$ echo var1\
+hola \
+$ echo var2\
+\
+$\
+\
+$ read var1?\'94Entre un valor: \'94\
+Entre un valor: hola\
+$ echo var1\
+hola \
+$\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b \cf0 \ul \ulc0 La variable IFS
+\b0 \ulnone \
+\pard\pardeftab720\sl220\partightenfactor0
+\cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 esta\'a0
+\b \cf4 \strokec4 variable
+\b0 \cf2 \strokec2 \'a0contiene los caracteres que son usados para partir las lineas en palabras que llegan desde la entrada estandar\
+LO QUE HACE ESTO ES QUE AL LEER DE READ CUANDO DIVIDE EN PALABRAS DIVIDA POR ESPACIO, PERO SI SE CAMBIA A : DIVIDIRA LAS PALABRAS POR :\
+El valor por defecto es Espacio, tabulaci\'f3n y salto de linea, sin embargo esto puede ser modificado en un script\
+\
+$ echo \'93IFS\\c\'94 | od -c \
+\
+comando od (octal dump) permite ver el valor de cada byte alojado en IFS, \\c elimina el \\n del comando echo para la tuber\'eda\
+\
+$ OLDIFS=\'93$IFS\'94\
+$ IFS=\'93:\'94\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \outl0\strokewidth0 $ IFS=\'93$ OLDIFS\'94\
+\
+deben ir comillas dobles para que los caracteres internos no sean interpretados por el shell\
+\
+
+\b\fs28 \cf6 \ul \ulc6 Ejecuci\'f3n de verificaciones
+\b0\fs24 \cf2 \cb3 \ulnone \outl0\strokewidth0 \strokec2 \
+
+\b\fs28 [ ] o comando test
+\fs24  -> 
+\b0 permite verificar archivos, cadena de caracteres y numero, devuelve 0 o 1 que se podr\'e1 consultar mostrando el valor de $?\
+$ [ expresion ] -> si o si espacio despu\'e9s [ y antes de ]\
+$ test expresion\
+\
+\ul Expresiones posibles para verificar archivos\
+\ulnone -e nombre arch -> verdadero si arch existe\
+\cf5 \cb3 \outl0\strokewidth0 -s nombre arch -> verdadero si arch no esta vac\'edo\
+\
+-f nombre arch -> verdadero si arch es de topo regular\
+-d nombre arch -> verdadero si arch es directorio\
+-h nombre arch -> verdadero si arch es enlace simb\'f3lico\
+-b nombre arch -> verdadero si arch es de tipo bloque especial\
+-c nombre arch -> verdadero si arch \cf5 \cb3 es de tipo caracter especial\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \outl0\strokewidth0 -p nombre arch -> verdadero si arch es de tipo tuber\'eda con nombre\
+-S nombre arch -> verdadero si arch es de tipo socket\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \outl0\strokewidth0 -r nombre arch -> verdadero si arch es accesible para lectura\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\cf5 \cb3 \outl0\strokewidth0 -r nombre arch -> verdadero si arch es accesible para escritura\
+-x nombre arch -> verdadero si arch es accesible para ejecuci\'f3n\
+-u nombre arch -> verdadero si arch tiene activo el bit setuid\
+-g nombre arch -> verdadero si arch tiene activo el bit setgid\
+-k nombre arch -> verdadero si arch tiene activo el sticky bit\
+\
+arch1 -nt arch2 -> verdadero si arch1 es mas nuevo que arch2\
+arch1 -ot arch2 -> verdadero si arch1 es mas viejo que arch2\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\cf5 \cb3 \outl0\strokewidth0 arch1 -ef arch2 -> verdadero si arch1 y arch2 referencing al mismo nodo, son enlaces fisicos\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\
+-O arch -> verdadero si el usuario es el propietario del archivo\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \outl0\strokewidth0 -G arch -> verdadero si el usuario pertenece al grupo propietario del archivo\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\cf5 \cb3 \outl0\strokewidth0 -t [desc] -> verdadero si el descriptor (1 por defecto) esta asociado a un terminal\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \ul \ulc5 Expresiones posibles para verificar cadena de caracteres\
+\ulnone -z cad1 -> verdadero si la cadena es de longitud 0\ul \
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \ulnone -n cad1 -> verdadero si la cadena no es de longitud 0\
+cad1 = cad2 -> verdadero si son iguales\
+cad1 != cad2 -> verdadero si son distintas\
+cad1 -> verdadero si cadena no esta vac\'eda\
+es recomendable poner las cadenas de caracteres entre comillas dobles, si cadena esta vac\'edo sin comillas dobles es como si no se hubiese puesto ninguna variable a comparar y no devuelve siquiera que es cadena vac\'eda\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \ul \ulc5 \
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \ulc5 Expresiones posibles para verificar n\'fameros\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \ulnone num1 -eq num2 -> verdadero si son iguales\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 num1 -ne num2 -> verdadero si son distintos\
+num1 -lt num2 -> verdadero si num1 es estrictamente menor a num2\
+num1 -le num2 -> verdadero si num1 es estrictamente menor o igual a num2\
+num1 -gt num2 -> verdadero si num1 es estrictamente mayor a num2\cf5 \cb3 \ul \ulc5 \
+\cf5 \cb3 \ulnone num1 -ge num2 -> verdadero si num1 es estrictamente mayor  o igual a num2\
+\
+\ul Operadores por orden de prioridad descendente\
+\ulnone ! -> or\
+-a -> and\
+-o -> or\
+\\(\\) -> se puede modificar el orden de prioridad con par\'e9ntesis, estos deben estar protegidos para no ser interpretados por el shell\
+\ul \
+\ulnone $ [ ! -d arch ] -> verdadero si jo es directorio\ul \
+\ulnone $ [ -d $dir -a -x $dir ] -> verdadero si $dir es directorio y el usuario tiene permisos para recorrerlo\
+$ [ -w $arch1 -a \\( -e $dir1 -o -e $dir2 \\) ]\
+\ul \
+\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 \ulc5 \
+
+\b\fs28 \cf2 \cb3 \ulnone \outl0\strokewidth0 \strokec2 [[ ]] ->
+\b0\fs24  es test enriquecido, todos los operadores anteriores son validos menos -a y -o que se remplazan por && y ||\
+no hace falta poner comillas dobles para ver si una cadena esta vac\'eda ni para salvar par\'e9ntesis\
+\
+cadena = patron\
+\cf5 \cb3 \outl0\strokewidth0 cadena != patron\
+cadena > cadena2\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 cadena < cadena2\
+\
+[[ $cadena = patron ]] -> [[ $numero = ?([+-])+([0-9])  ]] \
+\
+if [[ -w $arch && ( -e $dir1 || -e $dir2 ) ]]\
+\
+
+\b \ul Operadores de shell && y ||\
+
+\b0 \ulnone son diferentes a los que van entre [[ ]], ya que los \'faltimos son internos a test y los primeros son operadores de shell
+\b \ul \
+
+\b0 \ulnone \
+
+\b [[ -d /tmp/svg ]] && cd /tmp/svg
+\b0  -> si no existe /tmp/svg no se ejecuta comando cd y la expresion global devuelve false, si existe se ejecuta y la expresi\'f3n global devuelve true\
+\
+
+\b [[ -d /tmp/svg ]] || echo \'93El directorio no existe\'94
+\b0  -> devuelve verdadero si una de las dos condiciones se cumple, la segunda condici\'f3n solo se ejecuta si la primera devuelve falso\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b\fs28 \cf2 \cb3 \ul \ulc2 \outl0\strokewidth0 \strokec2 Aritmetica de numero enteros\
+
+\b0\fs24 \ulnone El comando (( )), remplaza el comando expr que no apunto\
+\
+x=10\
+((x+=10)) -> x vale 20\
+\
+if (($1 == $2 ))\
+\
+if (( (x>0) && (y>x) ))\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b\fs28 \cf5 \cb3 \ul \ulc5 \outl0\strokewidth0 Aritmetica de punto flotante comando bc y awk\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b0\fs24 \cf5 \cb3 \ulnone \
+noimp=153\
+iva=0.21\
+echo \'93$noimp * $iba\'94 | bc\
+\
+echo \'93$noimp $iva\'94 | awk \'91\{ print $1 * $2 \}\'92\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 echo \'93$noimp $iva\'94 | awk \'91\{ printf(\'93&.2f\\n\'94, $1 * $2) \}\'92\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b\fs28 \cf5 \cb3 \ul \ulc5 \outl0\strokewidth0 Sustituci\'f3n de operaciones aritmeticas\
+\
+
+\fs24 \ulnone echo \'93x vale $((x+=2))\'94 -> 
+\b0  (()) es un comando interno de shell y $(()) son los caracteres especiales de sustituci\'f3n aritm\'e9tica\ul \
+\
+
+\b\fs28 Correcci\'f3n de un script\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b0\fs24 \cf5 \cb3 \ulnone -pueden ir en el interior del script\
+\
+
+\b \ul Opciones -x \ulnone -> permite visualizar los comandos ejecutados luego del tratamiento de los caracteres especiales del shell
+\b0 \
+\
+$ set -x\
+$ set +x
+\b\fs28 \cf5 \cb3 \ul \ulc5 \
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b0\fs24 \cf5 \ulnone $ set -o xtrace\
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 $ set +o xtrace\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b \cf5 \cb3 \ul \ulc5 Opciones -n \ulnone -> detecta errores de sintaxis de shell al leer los comandos sin ejecutarlos
+\b0 \cf5 \cb3 \
+$ set -n\
+$ set +n
+\b\fs28 \cf5 \cb3 \ul \ulc5 \
+
+\b0\fs24 \ulnone $ set -o noexec\
+$ set +o \cf5 \cb3 noexec\cf5 \cb3 \
+\
+
+\b \ul Opciones -v \ulnone -> permite visualizar los comandos ejecutados antes del tratamiento de los caracteres especiales del shell
+\b0 \
+\pard\pardeftab720\sl220\partightenfactor0
+\cf5 \cb3 $ set -v\
+$ set +v
+\b\fs28 \cf5 \cb3 \ul \ulc5 \
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b0\fs24 \cf5 \ulnone $ set -o verbose\
+$ set +o \cf5 \cb3 verbose\
+\
+
+\b\fs28 \cf5 \cb3 \ul \ulc5 Estructura de control\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b0\fs24 \cf5 \cb3 \ulnone  if\
+them\
+\'85\
+elif\
+then\
+\'85\
+else\
+\'85.\
+fi\
+\
+case $var in\
+patron1) comando\
+\'85\
+;;\
+patron2) comando\
+\'85\
+;;\
+patron3 | patron4 | patron5) comando\
+\'85\
+;;\
+esas\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b\fs28 \cf5 \cb3 \ul \ulc5 Bucles for, while y until\
+
+\fs24 \ulnone for var in val1 val2 val3 valn
+\b0 \
+do\
+\'85\
+done\
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b \cf5 \cb3 for var in $variable
+\b0  -> lista de valores generados por sustituci\'f3n de variable
+\b\fs28 \cf5 \cb3 \ul \ulc5 \
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\fs24 \cf5 \ulnone for var in `comando` 
+\b0 \cf5 \cb3 -> lista de valores generados por sustituci\'f3n de comando
+\b\fs28 \cf5 \cb3 \ul \ulc5 \
+\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\fs24 \cf5 \cb3 \ulnone for var in *.c 
+\b0 -> lista de valores generados por sustituci\'f3n de caracteres de generaci\'f3n de nombres de archivo\
+\
+for var -> argumentos de linea de comando\
+for var in $* -> argumentos de linea de comando, equivalente al anterior\
+\pard\pardeftab720\sl220\partightenfactor0
+
+\b\fs28 \cf5 \cb3 \ul \ulc5 \
+brak y continue\
+}

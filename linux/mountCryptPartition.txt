@@ -1,0 +1,50 @@
+# mount /dev/sda2 /mnt/sda2
+mount: tipo de sistema de ficheros 'crypt_LUKS' desconocido
+
+no se puede montar por estar encriptado
+
+-----------------------------------------------------------
+
+# aptitud install lvm2
+# vgscan -v
+  Wiping cache of LVM-capable devices
+  Wiping internal VG cache
+Reading all physical volumes.  This may take a while...
+  Finding all volume groups
+
+mo se ve porque esta encriptado
+
+-------------------------------------------------------------
+
+# aptitude install cryptsetup
+#sudo modprobe dm-mod
+# cryptsetup luksOpen /dev/sda2 sda2_crypt
+Enter LUKS passphrase:
+key slot 0 unlocked.
+Command successful.
+
+
+ahora ya se ve
+
+--------------------------------------------------------------
+
+# vgscan
+Reading all physical volumes.  This may take a while...
+Found volume group "pepe" using metadata type lvm2
+
+se ve que el grupo de volúmenes físicos se llama pepe
+
+
+------------------------------------------------------
+
+#vgdisplay pepe -> da info sobre el grupo de volumenes fisico encriptado
+
+#lvdisplay /dev/pepe/ -> da mas info
+si sale LV Status              NOT available
+#vgchange -a -> para ponerlo activo
+----------------------------------------------------------
+mkdir /mnt/tmp
+#mount /dev/pepe/home /mnt/tmp/
+#ls /mnt/pepe
+
+listo, esta montado

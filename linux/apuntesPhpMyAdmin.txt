@@ -1,0 +1,44 @@
+aptitude install phpmyadmin
+
+----------------------------------
+durante la instalacion
+-----------------------
+seleccionar apache2 como servidor
+Poner si para configurar las bases de dtos para phpmyadmin con dbconfig-common
+contraseña de root de mysql
+contraseña de usuario phpmyadmin trulala
+
+papus
+
+
+--------------------------------------------------------------------------------------
+despues de la instalacion
+-------------------------
+vi /etc/apache2/apache2.conf
+
+en la ultima linea poner: Include /etc/phpmyadmin/apache.conf
+
+salir
+
+reiniciar apache
+
+
+---------------------------------------------------------------------------------------
+securizar phpmyadmin
+----------------------
+1- poner usuario y clave de apache
+htpasswd -c /etc/apache2/.htpasswd usuario
+
+2- Cambiar url de acceso
+Editar /etc/apache2/conf.d/phpmyadmin.conf
+para cambiar nombre de url que por defecto se usa para acceder a phpmyadmin
+
+cambiar...
+Alias /phpmyadmin /usr/share/phpmyadmin
+por...
+Alias /pepito /usr/share/phpmyadmin
+
+3-
+RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}

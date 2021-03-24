@@ -1,0 +1,124 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\fnil\fcharset0 Menlo-Bold;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c0;\csgray\c100000;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 VARIABLES DE ENTORNO\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\fs22 \cf2 \cb3 \CocoaLigature0 $ set -> muestra variables de entorno\
+$ echo $HOME -> muestra contenido de variable HOME\
+$variable=valor -> modifica el contenido de variable\
+\
+
+\f2\b \ul Variables mas importantes
+\f1\b0 \ulnone \
+$HOME\
+$PATH\
+$PS1 -> cadena de caracteres del promo principal\
+$TMOUT -> tiempo en segundos que espera el shell para cerrarse si no recibe comandos, 0 desactiva la opcion\
+$TERM -> tipo de terminal del usuario\
+$LOGNAME -> nombre de usuario conectado\
+\
+\
+\ul Categorias de variables de entorno\
+\ulnone -Usadas solo por el shell (ej: PS1 y PS2)\
+-Usadas por comandos y por el shell (ej: PATH, TERM)\
+-Usadas por comandos determinados (ej: EXINT)\
+\
+\ul Exportaci\'f3n de variables\ulnone \
+Por defecto las variables definidas a nivel de shell no se transmiten a los comandos ejecutados por el mismo, para eso hay que exportarlas\
+\
+$ env -> muestra las variables declaradas del shell actual que se exportan\
+\
+Una variable exportada a nivel de shell sera transmitida a todos los procesos descendientes, con independencia del nivel de descendencia\
+\
+$ export minvariable=valor -> settee a invariable comp exportada\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2\b \cf2 \cb3 \ul \ulc2 Opciones del shell\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b0 \cf2 \cb3 \ulnone El shel proporciona una serie de opciones para configurar un cierto numero de opciones\
+\
+$ set -o -> muestra lista de opciones\
+$ set -o opciones -> desactiva opcion\
+$ set +o opciones -> activa opcion\
+\
+\ul Opciones principales:\ulnone \
+
+\f2\b ignoreeos
+\f1\b0  -> desactivada por defecto, cuando esta activa permite salir del shell, ademas de con el comando exit, pulsando ^d\
+
+\f2\b noclobber
+\f1\b0  -> desactivada por defecto, cuando esta activa y se realiza una redirection a un archivo existente aparece una advertencia antes de sobre escribir dicho archivo\
+
+\f2\b xtrace
+\f1\b0  -> desactivada por defecto, activa permite depurar script\
+
+\f2\b emacs y vi
+\f1\b0  -> ver hist\'f3rico de comando\
+\
+\ul Alias de comandos \
+\ulnone $ alias -> permite visualizar los alias predefinidos\
+$ alias unalias -> permite visualizar el alias llamado unalias\
+\
+\ul Historico de comandos\ulnone \
+El shell almacena el hist\'f3rico de comandos en el archivo .bash_history del directorio principal del usuario\
+\
+
+\f2\b emacs y vi
+\f1\b0  -> opciones del shell que permite visualizar y editar el archivo .bash_history\
+\
+
+\fs28 \ul Archivos de entorno\
+\
+
+\fs22 \ulnone Se usan para almacenar de forma permanente las definiciones vinculadas con el entorno del usuario\
+\
+Algunos de estos archivos solo se ejecutan por el shell de conexi\'f3n\
+
+\f2\b shell de connexion -> 
+\f1\b0 es el primer shell que se ejecuta en modo consola, el primero que aparece luego del login. En entorno gr\'e1fico no existe shell de conexi\'f3n.\
+\
+En bash los archivos de entorno del shell de conexi\'f3n son:\
+.bash_profile\
+.bash_login\
+.profile\
+Usa uno de estos tres archivo en el orden que se han listado\
+En estos archivos se define:\
+-la exportacion de variables que se transmitir\'e1n a todos los procesos lanzados a partir de la shel de conexi\'f3n\
+-redefinicion de parametros del sistema vomo umask\
+-caracteristicas del terminal \
+\
+Si se modifica el archivo de entorno, para que la shell actual lo reelea, se usa el siguiente comando .\
+$ . ~/.bash_profile\
+\
+en .bash_profile no se definen:\
+-opciones del shell\
+-definiciones de alias\
+estos se encuentran en 
+\f2\b .bashrc\
+\
+
+\f1\b0 El bash de conexi\'f3n lee autom\'e1ticamente el archivo 
+\f2\b .bash_profile
+\f1\b0  y luego 
+\f2\b .bashrc
+\f1\b0 , un bash interactivo lee autom\'e1ticamente 
+\f2\b .bashrc
+\f1\b0 \
+\
+\
+\
+\
+
+\fs28 \ul \
+
+\fs22 \ulnone \
+\
+}

@@ -1,0 +1,193 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\fnil\fcharset0 Menlo-Bold;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;\red255\green255\blue255;
+}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgray\c0;\csgray\c100000;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs28 \cf0 \ul \ulc0 comandos internos vs comandos externos
+\b0\fs24 \ulnone \
+\
+
+\b \cf2 \ul \ulc2 comando interno
+\b0 \cf0 \ulnone  pertenece al shell, no corresponde a un archivo almacenado en disco, son ejecutados por el shell actual\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\fs22 \cf3 \cb4 \CocoaLigature0 $ type cd
+\f0\fs24 \cf0 \cb1 \CocoaLigature1 \
+
+\f1\fs22 \cf3 \cb4 \CocoaLigature0 cd is a shell builtin
+\f0\fs24 \cf0 \cb1 \CocoaLigature1 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 comandos internos: cd, pwd, echo, \
+
+\b \ul comando externo
+\b0 \ulnone  es un archivo alojado en el \'e1rbol del sistema y son ejecutados por un shell hijo que actualmente de intermediario \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\fs22 \cf3 \cb4 \CocoaLigature0 $ type ls\
+ls is /bin/ls\
+\
+
+\f0\b\fs24 Un mismo comando puede tener una implementaci\'f3n interna y una externa\
+
+\b0 Ej, comando pwd\cf0 \cb1 \CocoaLigature1 \
+En este caso:\
+-el comando interno se ejecuta con mayor prioridad\
+-el comando interno se ejecuta con mayor rapidez que el comando externo\
+-el comando type especifica que el comando es interno, pero no dice que existe una implementaci\'f3n externa \
+\
+
+\b \ul Impresi\'f3n por pantalla - comando echo\
+
+\b0 caracteres especiales\
+\ulnone \\n\
+\\c -> elimina salto de linea natural del comando echo\
+	
+\f1\fs22 \cf3 \cb4 \CocoaLigature0 $ echo -e "hola\\c"
+\f0\fs24 \cf0 \cb1 \CocoaLigature1 \
+\\a -> tono\
+	
+\f1\fs22 \cf3 \cb4 \CocoaLigature0 $ echo -e "\\a"\
+\\b -> borrado caracter anterior\
+\\f -> salto de pagina\
+\\t\
+\\v -> tabulaci\'f3n vertical\
+\\0xxx -> valor de caracter expresado en octal\
+\
+
+\f2\b \ul sustituci\'f3n de nombres de archivo\
+
+\f1\b0 \ulnone * -> conjunto de caracteres cualquiera
+\f2\b \ul \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b0 \cf3 \cb4 \ulnone 	$ ls *.py\
+	$ ls get*\
+? -> un caracter cualquiera\
+	$ ls ??? -> muestra todos los archivos cuyo nombre completo tiene 3 caracteres\
+[] -> lista de caracteres que se espera en una posici\'f3n concreta del nombre de archivo, puede especificarse un rango, ! niega\
+	$ ls [a-z]*\
+	$ ls [ab]*\
+	$ ls [!a-z]*\
+	$ ls [!ab]*\
+\
+
+\f2\b \ul Expresiones complejas\
+\ulnone en bash es necesario activar la opci\'f3n extglob con el comando short \
+	$ shopt -s extglob\
+
+\f1\b0 \
+?(expresion) -> la expresi\'f3n estar\'e1 presente 0 o 1 vez\
+*(expresion) -> la expresi\'f3n estar\'e1 presente 0 o n veces\
++(expresion) -> la expresi\'f3n estar\'e1 presente 1 o n veces\
+@(expresion) -> la expresi\'f3n estar\'e1 presente solo 1 vez\
+!(expresion) -> la expresi\'f3n no estar\'e1 presente\
+\
+barra vertical indica or\
+?(expresion | expresion2) -> la expresi\'f3n o la expresion2 estar\'e1 presente 0 o 1 vez\
+*(expresion | expresion2) -> la expresi\'f3n o la expresion2 estar\'e1 presente 0 o n veces\
++(expresion | expresion2) -> la expresi\'f3n o la expresion2 estar\'e1 presente 1 o n veces\
+@(expresion | expresion2) -> la expresi\'f3n o la expresion2 estar\'e1 presente solo 1 vez\
+!(expresion | expresion2) -> la expresi\'f3n o la expresion2 no estar\'e1 presente\
+\
+
+\f2\b \ul Interpretaci\'f3n del shell\
+
+\f1\b0 \ulnone Todos los caracteres especiales se sustituyen por el shell, no por el comando\
+en casos de comandos externos, se sustituye el caracter especial por el shell actual y luego se crea el shell hijo que ejecutara dicho comando\
+\
+
+\f2\b \ul Separaci\'f3n de comandos
+\f1\b0 \ulnone \
+; permite escribir varios comandos en una misma linea que se ejecutaran secuancialmente\
+\
+
+\f2\b\fs28 \ul REDIRECCIONES
+\fs22 \
+
+\f1\b0 \ulnone Las redirecciones son ejecutadas por el shell\
+Son siempre tratadas de izquierda a derecha\
+Las redirecciones se realizan con un shell hijo\
+\
+Los procesos unix tienen por defecto su archivo terminal abierto con tres 
+\f2\b descriptores
+\f1\b0  de archivos diferentes\
+0 -> entrada est\'e1ndar, por defecto teclado\
+1 - > salida est\'e1ndar. por defecto pantalla\
+2 -> salida de error est\'e1ndar, por defecto pantalla\
+\
+Los descriptores de archivo son heredados en la duplicaci\'f3n (fork()) y remplazo (exec())\
+\
+$ comando 0< archivo\
+$ comando 1> archivo\
+$ comando 1>> archivo\
+$ comando 2> archivo\
+$ comando 2>> archivo\
+$ comando 1> archivo 2> archivoError\
+$ comando 1> archivo 2> /dev/null\
+	/dev/null -> archivo especial que siempre esta vac\'edo\
+
+\f2\b Mandar las dos salidas est\'e1ndar al mismo archivo:
+\f1\b0 \
+$ comando 1> archivo 2>&1\
+$ comando 2> archivo 1>&2\
+comparten el mismo offset ya que el segundo descriptor es un puntero al primero, no abre el mismo archivo dos veces\
+\
+$ comando 2>&1 1>archivo -> en este caso la salida de error va a la salida por defecto del descriptor 1 y luego el descriptor 1 se redir\'edgeme a un archivo\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2\b\fs28 \cf3 \cb4 \ul \ulc3 TUBERIAS\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b0\fs22 \cf3 \cb4 \ulnone comando1 | comando2 -> permiten la comunicaci\'f3n entre dos procesos\
+comando2 recibe como entrada la salida del comando1\
+se crea un shell hijo por cada comando de la tuber\'eda\
+la salida de error no va a la tuber\'eda\
+\
+
+\f2\b Comandos que no leen su entrada est\'e1ndar no pueden ir a la derecha de una tuber\'eda
+\f1\b0 , algunos ejemplos son:\
+ls, who, find, chmod, cp, mv, ln, mkdir, rmdir, date, kill, type, echo\
+\
+Comandos que leen su entrada est\'e1ndar son los que requieren una entrada de datos por el teclado\
+\
+Los comandos filtro pueden ir a la derecha de una tuber\'eda ya que funcionan de dos maneras, si tienen un archivo como argumento leen del archivo, sino leen de la entrada est\'e1ndar\
+algunos ej son: grep, cat, sort, cut, wc, lp, sed, awk\
+\
+
+\f2\b Para saber si un comando lee su entrada est\'e1ndar
+\f1\b0  se mira su pagina en man y si como argumento file esta entre corchetes es una primera se\'f1al, ya que file es optativo, despu\'e9s mas adelante explica que si no se especifica file se lleva del teclado\
+\
+tambien se puede probar el comando sin dar ning\'fan nombre de archivo como argumento, a ver i da o no error\
+\
+Hay excepciones como el comando more, que sin nombre de archivo tira error pero a la derecha de una tuber\'eda no, ya que si no recibe nombre de archivo antes de dar error verifica si esta o no en un tuber\'eda\
+\
+\
+Enviar alida est andar y salida est\'e1ndar de error por tuber\'eda\
+ls -l 2>$1 | tee lisraerch\
+\
+
+\f2\b\fs28 \ul Agrupaci\'f3n de comandos
+\f1\b0\fs22 \ulnone \
+Se usa para redirigirse la salida de varios comandos hacia un mismo archivo o tuber\'eda\
+o para ejecutar varios comandos en un mismo entorno\
+\
+$ date ; ls > archsalida -> solo ls va a archsalida, date sale por pantalla\
+\
+para agrupar se usa los par\'e9ntesis () o las llaves \{\}, en el primer caso los comandos se ejecutan en un shell hijo, en el segundo los comandos se ejecutan en la shell actual\
+ \
+$ (date ; ls) > archsalida -> anbas salidas van a archsalida, por el mecanismo de herencia los dos comando usan el mismo offset\
+\
+$ (cd /tmp ; pwd ; ls) > archsalida -> cuando termina la ejecuci\'f3n el directorio del shell es el mismo que antes de ejecutar cd /tmp, ya que cd /tmp se ejecuta en una shell hijo\
+\
+$ (date ; ls) > archsalida\
+$ \{ date ; ls ; \} > archsalida -> mas rapido, por lo dem\'e1s iguales\
+\
+$ \{ cd /tmp ; pwd ; ls ; \} > archsalida -> cuando termina el directorio actual es /tmp, ya que cd es un comando interno de shell y se ejecuta en la shell padre
+\f2\b \ul \
+}

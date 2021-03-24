@@ -1,0 +1,104 @@
+Archivos de configuracion
+-------------------------
+/etc/apache2/apache2.conf
+/etc/apache2/httpd.conf -> pisa la configuracion de apache2.conf
+acces.conf
+/etc/mime.types
+magic
+.htaccess
+
+la directiva Include e usa para cargar archivos adicionales como si fueran parte de la configuración principal
+
+modulos
+-------
+LoadModule -> para cargar un modulo
+
+mods-available -> modulos disponibles
+mods-enabled -> vinculos simbolicos de archivos en mods-available que se cargan por medio de includs automaticamente
+apache2ctl -t -D DUMP_MODULES -> muestra modulos cargados
+/usr/lib/apache2/modules -> directorio de modulos
+
+usuiario y grupo de apache
+--------------------------
+para ver bajo que usuario y grupo se ejecuta apache hacer:
+ps aux | grep apache 
+la primer instancioa siempre es root, pero no responde directamente solicitudes entrantes
+
+si las demas tambien son root ambiar las opciones 
+user y Groupe en /etc/apache2/apache2.conf
+
+
+
+
+/etc/apache2/apache2.conf
+-------------------------
+Timeout 300 -> tiempo de espera que apache espera para devolver la solicitud, muy relacionado con php
+				timpo maximo que apache va a brindar a un proceso en particular
+
+
+KeepAlive On -> conexiones persistentes
+MaxKeepAliveRequest -> cuantas conexiones persistentes van a haber
+			las conexiones KeepAlive son un subconjunto de las conexiones simultaneas
+MaxKeepAliveTimeout 15
+
+
+IFModule mpm_prefork_module vs IfModule mpm_worker_module -> se usa uno u otro y van relacionados directamente con los recuroso del servidor
+			en la configuracion de php se leige si usar uno u otro
+
+IFModule mpm_prefork_module -> modulo que nos va a dar el rendimineto real real de apache
+	StartServers 5 -> cantidad procesos simultaneos
+	MinSpareServers 5 -> 
+	MaxSpareServers 10 ->
+	MaxClients 150 -> cantidad maxima posible de clintes simultaneos
+	MaxRequestPerChild -> conexiones perdidas?
+
+	
+IfModule mpm_worker_module -> baja mucho los recursos del servidor pera 
+			relentiza el tiempo en que tarda en brindar una pagina
+
+
+<Files ~ "^\.ht"> -> linea 158 -> apache no va a mostrar o brindar ningun archivo que comience con .ht, osea no va a servir el .htaccess
+
+
+HostnameLookups off -> en el log logear por nombre en vez de ip? Tine carga por hacer dns reverso
+						sirve para intranets o valanceos de carga para filtrar por nom,bre de hosts
+linea 201 -> carga todo lo que sea .load o .conf
+
+
+include sites-enabled/ -> todos mis sitios van a estar definidos ahi, el archivo que vamos a usar para definir a todos los sitios cva a cer 000-defaults
+/etc/apache2/sites-enabled/000-defaults
+<virtualHost *:80> -> * independiza de una ip en particular, osea de cualquier interface
+	servername dominio
+	Options FollowSymlinks -> seguir los links simbolicos
+
+
+
+
+
+
+
+
+Monitorear Apache2 con Mod_status
+---------------------------------
+ls -l /usr/lib/apache2/modules -> para ver si esta el modulo
+apache2ctl -t -D DUMP_MODULES -> para ver si esta cargado
+si esta cargado poner en /etc/apache2/httpd.conf las siguientes lineas:
+ExtendedStatus On
+<location /server-status>
+SetHandler server-status
+order deny,allow
+allow from miip
+deny from all
+</Location>
+
+reiniciar apache  y entrar en example.com/server-status o example.com/server-status?refresh=5
+
+obs:Esta habilidad es muy útil cuando se va a monitorear el web Server mediante una herramienta más robusta como: SiteScope, Patrol, etc. Con la que puedes generar reportes de disponibilidad de servicio, tiempo de respuesta, carga de usuarios etc.
+---------------------------------
+
+
+
+netstat -plan|grep :80 | awk {'print $5'}|cut -d: -f 1|sort|uniq -c|sort -n ->  nº de peticiones al puerto 80 por cada IP en el momento que lo ejecutemos.
+
+netstat -plan|grep :80 |  grep ESTABLISHED | awk {'print $5'}|cut -d: -f 1|sort|uniq -c|sort -n -> idem anterior pero con conexiones establecidas
+
