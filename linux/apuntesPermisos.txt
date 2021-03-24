@@ -1,0 +1,118 @@
+﻿Como propitarios de nuestros archivos podemos protegerlos asociandoles ciertos permisos
+Dichos permisos estan dados por las operaciones que cada tipo de usuario puede relizar
+Los tipos de usuario pueden ser:
+	Usuario propietario del archivo
+	Grupo al que pertenece el propietario del archivo
+	Otros usuarios
+Las operaciones estan dadas por los permisos de acceso que pueden ser:
+	1. lecturra(r)
+	2. escritura(w)
+	3. ejecucuión(x)
+	
+	Para archivos:
+		r -> permite leer el arhivo
+		w -> permite escribir el archivo o eliminarlo
+		x -> permite ejecutar el archivo (carece de sentido si el archivo no
+			es ejecutable)
+	Para directorios:
+		r -> permite leer el contenido del directorio
+		w -> permite crear en el nuevas entradas de directorio o eliminarlas
+		x -> permite examinar un directorio, pero no leer ni escribir en el.
+
+-Como existen tres tipos de usuarios y tres tipos de permisos un archivo tiene 
+asociados nueve tipos distintos de permisos.
+-Dichos permisos se almacenan en una tabla de inodo y se pueden ver con el comando ls -l
+-Un usuario puede tener 1 de entre 8 tipos de permisos para un archivo ya que los 3 tipos de permisos son representados con 3 bits (un bits por cada permiso) siendo 1 permiso concedido
+y 0 permiso denegado. 
+-Estos 8 permisos posibles por usuario son representados con numeros del 0 al 7.
+0 significa que no tiene permiso para nada y 7 que tiene permiso para todo.
+	r	w	x	valor	significado
+	-------------------------------------------
+---	0	0	0	0	sin permisos
+--x	0	0	0	1	solo permiso de ejecucion
+-w-	0	1	0	2	solo permiso de escritura
+-wx	0	1	1	3	permiso de escritura y ejecucion
+r--	1	0	0	4	solo permiso de lectura
+r-x	1	0	1	5	prmiso de lectura y ejecucion
+rw-	1	1	0	6	permiso de lectura y escritura
+rwx	1	1	1	7	permiso de lectura, escritura y ejecucion
+
+-El total de permisos que se necesita para representar los permisos de los tres tipos
+de usuarios de un archivo supone unos valores que van del 000 al 777 (en octal)
+El primer digito especifica los permisos del usuario propietario del archivo
+El segundo los permisos del grupo al que pertenece el propietario del archivo
+El tercero los permisos de otros usuarios.
+-El valor 0 en un bit de permisos tambien se denota como -
+El valor uno se denota tambien como r, w o x segun la posicion del bit
+	Un valor 0 seria ---
+	Un valor 7 seria rwx
+
+Modificar permisos de acceso de un archivo (comando chmod)
+----------------------------------------------------------
+Hay dos maneras de cambiar los permisos
+	chmod
+		-R -> cambiar permisos de forma recurrente
+		-f -> impone permisos especificados sin mandar erar si somos propietarios
+	simbolica
+		Valores del modo simbolico:
+			quien		operadores		privilegios
+			------          ----------		------------
+			u -> usuario	+ dar privilegios	r -> bit de lectura
+			g -> grupo	- quitar privilegios	w -> bit de escritura
+			o -> otros	= fijar privilegios	x -> bir de ejecucion
+			a -> todos				u -> actuales del usuario
+			ugo -> todos				g -> actuales del grupo
+								o -> actuales de otros
+								l -> bit de bloqueo
+								s -> bit d modo ID
+								t -> bit de permanencia
+		
+		Ejemplos:
+			chmod u=rw-,f=r--,o--- archivo
+			chmod ug=r-x,o=r archivo
+			chmod g+w archivo -> al grupo le agrego escritura
+			chmod go= archivo -> saca todos los privilegios de grupo y otros
+					     en el directorio muestra
+	numerica
+		chmod 555 archivo -> todos r-x
+		chmod 644 archivo -> rw-r--r--
+
+chown -> cambia usuario y/o grupo propietario de un archivo
+	chown user.group arcghivo -> cambia ambos
+	chown user archivo -> cambia solo el usuario
+	chown .group archivo -> cambia solo el grupo
+
+chgrp -> cambia el grupo propietario de los archivos que eran propiedad de otro grupo
+
+umask -> mascara de bits que afecta a los permisos de los nuevos archivos o directorios
+	los permisos por defecto de los nuevos directorios y ejecutables es 777
+	los permisos por defecto de los nuevos archivos ordinarios es 666
+	umask 022 -> (777-022)=755 es el permiso con que se crearan los nuevos directorios
+		     (666-022)=644 es el permiso con que se crearan los nuevos archivos
+
+* bits de acceso especial *
+---------------------------
+Ademas de los permisos de acceso vistos hasta ahora hay 3 permisos especiales mas:
+	1. bit de fijación de ID de usuario (SUID)
+	2. bit de fijacion de ID de grupo (SGID)
+	3. bit de permanencia
+
+
+permisos especiales
+----------------------
+4 suid (en usuarios una s)(todos los archivos con suid pueden ser ejecutados por todos como si fueran el owner del archivo)
+	chmod u+s archivo
+	chmod 4644 archivo
+
+2	sgid (en grupos una s)(todos los archivos con suid pueden ser ejecutados por todos como si fueran del grupo owner del archivo)
+	chmod g+s archivo
+	chmod 2644 archivo
+
+1		stickybit (en others una t)
+	chmod o+t archivo file/dir
+	chmod 1644 archivo file/dir
+el sticky bit se utiliza con directorios. Cuando se le asigna a un directorio,
+ significa que los elementos que hay en ese directorio sólo pueden ser renombrados o borrados por el propietario del elemento,
+ el propietario del directorio o el usuario root, aunque el resto de usuarios tenga permisos de escritura y,
+ por tanto, puedan modificar el contenido de esos elementos.
+  

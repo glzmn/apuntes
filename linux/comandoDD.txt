@@ -1,0 +1,131 @@
+dd (duplicate disck)
+
+
+uso basico
+	dd if=origen of=destino
+otras opciones
+	dd if=origen of=destino bs="tamaño rn bytes de los bloques de archivo que leera antes de escribirlos" count="cantidad de bloques de tamaño especifico en BS que queremos copiar"
+	
+	Si tenemos bs=1024 y count=3 copiara 3 kilobytes en 3 veces
+
+	Para hacer imagen de disco bs sera potencia de 2
+
+
+USO 1
+------------------------------------------------
+copia imagen de cd
+	dd if=/dev/cdroom of=imagendecd.iso
+
+monta imagen de cd en una carpeta
+	mount -o loop imagendecd.iso /mnt/carpeta
+--------------------------------------------------
+
+USO 2
+---------------------------------------------------------------------------
+copia todos 0 en el MBR(master boot record)
+	dd if=/dev/zero of=/dev/hda bs=512 count=1
+
+Limpia el sector de datos del MBR pero deja la tabla de particiones intacta
+	dd if=/dev/zero of=/dev/hda bs=446 count=1
+	Sirve para borrar grub o lilo sin tocar las particiones
+
+restaurar mbr de un disco desde el mbr de otro
+	dd if=mbr of=/dev/hda
+
+copiar el vbs(volumen boot sector) de un disco
+	dd if=/dev/hda2 of=/sector_de_arranque_hda2 count=1 bs=512
+restaurar el vbs
+	dd if=/sector_de_arranque_hda2 of=/dev/hda2
+	
+
+----------------------------------------------------------------------------
+
+
+USO 3
+-------------------------------------------------
+Para hacer imagen de particion
+	dd if=/dev/sda2 of=/buckups/sda2.img bs=1M
+Para recuperarla
+	dd if=/backups/sda2.img of=/dev/sda2
+-------------------------------------------------
+
+
+USO 4
+--------------------------------------------------------------
+remplazar una cadena por otra en todo el disco rigido
+	dd if=/dev/sda | sed 's/BinLaden/Cuca/g' | dd of=/dev/sda
+--------------------------------------------------------------
+
+
+
+USO 5
+--------------------------------------------------------------------------------
+llenar el rigido 7 veces con caracteres aleatorios
+	forn in (1..7); do dd if=/dev/urandom of=/dev/sda bs=8b conv=notrunc; done
+--------------------------------------------------------------------------------
+
+USO 6
+--------------------------------------------------------------------------------------------------------------
+leer memoria ram en busca de texto
+	dd if=/dev/mem | hexdump -C | grep 'algun texto dentro del archivo que me olvide de guardar al cerrarlo'
+--------------------------------------------------------------------------------------------------------------
+
+USO 7
+---------------------------------------------
+Pasr a mayuscula
+	dd if=miarchivo of=miarchivo conv=ucase
+---------------------------------------------
+
+USO 8
+---------------------------------------------------------------------
+crear archivo vacio de tamaño x
+	dd if=/dev/zero of=archivo_nuevo bs=1024 count=1024
+
+crear archivos swap con el mismo concepto
+	dd if=/dev/zero of=/swapspace bs=4k count=250000
+	mkswap /swapspace
+	swapon /swapspace
+
+y esto lo cea sobre la marcha muy util para servidores sobrecargados
+---------------------------------------------------------------------
+
+USO 9
+--------------------------------------------------
+crear imagen de dico duro
+	dd if=/dev/hda1 of=/home/hda1.bin
+
+crea imgen de disco diro comprimida
+	dd if=/dev/hda1 | gzip > /home/hda1.bin.gz
+	dd if=/dev/hda1 | bzip2 --best > /home/hda1.bin.bz2 (muy lento)
+restaura
+	gunzip -c /home/hda1.bin.gz | dd of=/dev/hda1
+	bunzip2 -c /home/hda1.bin.bz2 | dd of=/dev/hda1
+
+--------------------------------------------------
+
+USO 10
+------------------------------------------------------------------
+recuperar dvd/cd rayado 
+	dd if=/dev/cdrom of=/tmp/dvd_recuperado.iso conv=noerror,sync
+
+------------------------------------------------------------------
+
+USO 11
+-------------------------------------------------------------
+partir rchivo o disco para opiar en cd
+	dd if=/dev/sda1 | gzip -c | split -b 700m - sda1.bin..gz
+restaurarlo
+	cat sda1.bin.* | guzip -c | dd of=/dev/sda1
+-------------------------------------------------------------
+
+COPIA FORENSE
+---------------------------
+dd if=/dev/sda of=win_hd.dd bs=4096 conv=noerror,sync
+---------------------------------------------------
+
+SABER ESTADO Y TIEMPO RESTANTE DEL COMANDO DD
+---------------------------------------------
+en otra terminal poner
+	ps -a -> para saber pid del proceso dd
+	kill -sigusr1 pid_de_comando_dd
+volver a la terminal original para ver los datos

@@ -1,0 +1,80 @@
+ETHERNET
+--------
+Principales archivos de configuracion de red
+--------------------------------------------
+	/etc/sysconfig/network
+	/etc/hosts (man hosts)
+	/etc/host.conf 
+	/etc/resolv.conf
+	/etc/sysconfig/network-scripts/ifcg-ethX (x=numero de dispositivo)
+	
+	Otros:
+		/etc/modprobe.conf
+		/etc/rc.d/rc.local
+		/etc/services
+
+Parar, prender y resetear el servicio network
+	service network stop
+	service network start
+	service network restart
+
+Para apagar o levantar un dispositivo particular
+	ifdown eth0
+	ifup eth0
+
+Configuracion fugaz
+-------------------
+	/sbin/ifconfig	
+		ifconfig ethx 192.168.0.1 netmask 255.255.255.0
+		ifconfig ethx 192.168.0.1 netmask 255.255.255.0 dev eth0
+	/sbin/route
+		route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.0.254
+		route add -host 192.168.1.2 gw 192.168.0.254 dev eth0
+			por donde acceder a una maquina particular desde eth0
+		route default gw 192.168.0.253 
+			donde busca todas las redes a las que no sabe como llegar
+	ping 
+		ping [ip | namehost]
+			-c # [ip] -> hace ping # veces
+	write nombreUsuario -> escribe mensaje en la terminal remota de mobreUsuario
+	/bin/netstat
+Configuracion persistente
+-------------------------
+	/etc/hosts
+		es un mapa de IP para los nombres de anfitriones utilizado para busquedas
+		locales de tipo DNS
+		es una linea por IP donde cada, primero va la IP y luego los nombres de
+		host a buscar en esa IP. Cada parametro va separado por una tabulacion.
+	/etc/hosts.conf
+		lista del orden en que la PC va a buscar una resolucion de noombre
+		de anfitrion.
+		order hosts, bind -> primero busca en el archivo /etc/hosts y luego en DNS
+	/etc/resolv.conf
+		Establece los DNS y el orden de los dominios para su uso por el DNS
+		Si se usa DHCP se genera automaticamente
+		nameserver ip
+		nameserver ip 
+
+	/etc/sysconfig/network
+		NETWORKING=[yes|no]
+		HOSTNAME=(nombre de host)
+		GATEWAY=xxx.xxx.xxx.xxx
+	/etc/sysconfig/network-scripts/ifcg-ethX
+		DEVICE=ethX
+		BOOTPROTO=[static | dhcp | none]
+		IPADDR=xxx.xxx.xxx.xxx
+		NETMASK=xxx.xxx.xxx.xxx
+		HWADDR=direccion mac
+		ONBOOT=[yes | no ]
+		GATEWAY=xxx.xxx.xxx.xxx defoult gateway para este dispositivo
+		USRCTL=[yes|no] -> ¿los usuarios no root pueden controlar el dispositivo?
+
+	/etc/sysconfig/network-scripts/ifcg-ethX:0
+		igual a ifcfg-ethX pero para un alias de una placa de red
+		en device va ethX:0
+
+Seguridad
+---------
+nmap (buscar bulnerabilidades)
+Tripwire pag 531 de la biblia
+

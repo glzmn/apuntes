@@ -1,0 +1,57 @@
+poner que a una hora se apague fail2ban por si se pierde el acceso ssh por ataques ddos reiterados
+ya que la politica es banear todas las ip por 5 minutos cada vez que haya un intento fallido de inicio de secion de ssh
+lo mimo hacer con ftp
+
+
+
+ver http://www.trebol-a.com/2007/10/27/detener-ataques-con-fail2ban/
+
+
+
+Los servicios que requieren para identificarse un nombre de usuario y una contrase?a son objetivos potenciales
+para ataques de diccionario. Sshutout y Fail2ban introducen penalizaciones de tiempo para los intentos
+no v?lidos.
+
+
+La herramienta est? dividida en dos componentes: un servidor y un cliente. 
+El primero monitoriza los archivos de registro y las normas de iptables.
+El administrador puede utilizar el cliente para dar instrucciones al servidor para cambiar, por ejemplo, el nivel del login.
+
+/etc/fail2ban/jail.conf define el n?mero de servicios que Fail2ban puede proteger.
+se divide en diferentes secciones que comienzan con el servicio a protejer entre corchetes, como [ssh]
+La entrada filter = sshd es equivalente a un archivo en el directorio /etc/fail2ban/filter.d.
+
+el archivo /etc/fail2ban/filter.d/ssh contiene las expreciones regulares a buscar en el archivo de configuracion
+logpath = /var/log/auth.log
+
+
+En este punto
+no se puede configurar el tiempo de cierre,
+dado que este valor est? configurado en 600
+segundos en la secci?n global [DEFAULT]. Si
+resulta demasiado largo, puede a?adirse una
+entrada bantime = 300 en la secci?n [ssh].
+
+
+SSH tiene dos jaulas: la que acabamos de
+mencionar, y sshd-ddos. Esta ?ltima no est?
+dise?ada para prevenir un intento de adivinar
+contrase?as, sino de contrarrestar los ataques
+DoS (“denial-of-service” o
+denegaci?n de servicio), que
+abren conexiones con el daemon
+SSH sin introducir una
+contrase?a.
+
+Aunque es posible configurar m?ltiples expresiones
+regulares por jaula, muchos administradores
+prefieroen asignar distintos tiempos de
+expulsi?n para ataques DoS distribuidos
+(DdoS) en oposici?n a los intentos fallidos de
+login.
+
+La jaula SSH es la ?nica configurada en
+enabled = true por defecto; todas las dem?s
+(incluyendo sshd-ddos) hay que activarlas
+manualmente.
+

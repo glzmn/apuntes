@@ -1,0 +1,44 @@
+Install
+=========
+brew install mongodb-community@4.2
+
+
+the configuration file (/usr/local/etc/mongod.conf)
+the log directory path (/usr/local/var/log/mongodb)
+the data directory path (/usr/local/var/mongodb)
+
+
+$ mongod --version
+
+$ mongod or $   brew services start mongodb-communit
+
+mongod --config /usr/local/etc/mongod.conf
+
+$ mongo
+
+> use admin
+
+
+Stopping MongoDB
+================
+> use admin
+switched to db admin
+> db.shutdownServer()
+server should be down...
+
+
+ 
+Creo usuario que puede interactuar con todas las BD
+-----------------------------------------------------
+> db.createUser(
+  {
+    user: "myServerAdmin",
+    pwd: "mipassword",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+);
+
+Restringir acceso No autentificado
+----------------------------------
+Aunque se creo un usuario por defecto mongodb permite entrar sin autentificarse, para cambiar esto hay que comentar la siguiente linea del archivo Mongo.conf
+

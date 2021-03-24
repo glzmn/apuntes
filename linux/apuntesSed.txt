@@ -1,0 +1,37 @@
+sed '/^$/d' fichero -> borrar las líneas en blanco de un fichero:
+
+
+cat fichero | sed '/^[ ]*$/d' > ficherodestino -> borrará todas las líneas en blanco de fichero. 
+
+
+sed '/^$/ d' fichero > fichero2.txt -> elimina lineas en blanco
+
+sed '/./,/^$/!d' fichero -> Eliminar múltiples líneas en blanco consecutivas dejando sólo 1
+
+sed 's/ *$//' fichero ->  Eliminar todos los espacios que haya al final de cada línea
+
+sed 's/\t//g' index.html > index2.html -> eliminar tabuladores
+sed 's/^ *//g' index.html > index2.html -> elimina espacios en blanco al comienzo de cada línea
+
+
+ sed -e '/^^M$/d' index.html > index2.html -> elimina lineas que solo tienen el ^M -> para hacerlo se hace ctrol+V seguido de ctrol+M
+
+
+sed 's/^/.-/' arch.txt Agrega la cadena '.-' al inicio de cada linea de arch.txt
+
+
+"sed ‘s/ </</g’ 
+
+"sed ‘s/ >/>/g’ 
+-------------------------------------
+Remove blank lines using grep
+
+#!/bin/sh
+files="/home/me/data/*.txt"
+for i in $files
+do
+  sed '/^$/d' $i > $i.out
+  mv  $i.out $i
+done
+
+-----------------------------------

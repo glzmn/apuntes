@@ -1,0 +1,158 @@
+
+DESPUES DE INSTALAR EN MAC
+---------------------------
+ 19  vi /etc/paths
+/usr/local/bin
+/usr/bin
+/bin
+/usr/sbin
+/sbin
+/usr/local/mysql/bin/
+
+
+87  mkdir /var/mysql
+88  sudo mkdir /var/mysql
+89  cd /var/mysql/
+91  sudo ln -s /tmp/mysql.sock
+92  cd /usr/local/mysql/bin/
+
+Start MySQL
+sudo /usr/local/mysql/support-files/mysql.server start
+
+Stop MySQL
+sudo /usr/local/mysql/support-files/mysql.server stop
+
+Restart MySQL
+sudo /usr/local/mysql/support-files/mysql.server restart
+
+mysql -p -u root
+USE mysql;
+DELETE FROM user WHERE User='';
+DELETE FROM db WHERE User='';
+FUSH PRIVILEGES;
+
+DESCRIBE quinielanacional; -> muetra nombres y tipos de columnas de la tabla quinielanacional
+
+mysql> CREATE DATABASE menagerie;
+
+mysql> CREATE USER 'finley'@'localhost' IDENTIFIED BY 'some_pass';
+
+SET PASSWORD FOR 'pepequiniela'@'localhost' ='tricota';
+
+
+luego usar grant para asignar base de datos
+
+APAGAR SERVIDOR
+----------------
+/usr/local/mysql/bin/mysqladmin -u root -p shutdown 
+
+Base de datos mysql
+-------------------
+Contiene las tablas de autorizaciones que controlan el acceso de los clientes al servidor
+user -> tabla de usuarios que pueden conectar con el servidor y sus privilegios globales
+db -> privilegios a nivel de bases de datos
+tables_priv -> privilegios a nivel de tablas
+colums_priv -> privilegios a nivel de columnas
+host -> tabla de autorizacion
+
+CAMBIAR ENTRE USUARIOS
+-----------------------
+mysql> select current_user(); -> muestra usuario que estamos usando
+mysql> system mysql -u ale -p -> cambia al usuario ale
+
+
+GRANT y REVOKE
+--------------
+
+mysql> GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost'; -> da todos los privilegios al usuario ale en la base de datos TiendaInformatica
+
+
+sentencias que afectan a las tablas user, db, tables_priv y colums_priv
+son una abstraccion de insert y updte para estas cuatro tablas
+
+cuando se ejecute GRANT para una cuenta se crea un registro para dicha cuenta el la tabla user si es que aun no existe.
+si la sentencia especifica privilegios globales se registraran tambien en la tabla user
+si especifica privilegios para una base, tabla o columna especifica, se registraran en las tablas db, tables_priv y colums_priv respectivamente
+
+GRANT ALL ON sampdb.* TO 'ale'@'localhost' IDENTIFIED BY 'papus'; -> crea usuario con todos los privilegios para la db sampdb que se conecta desde localhost y su password es papus
+
+GRANT SELECT ON sampdb.* TO 'ale'@'localhost' IDENTIFIED BY 'papus'; -> crea usuario de solo lectura para la db sampdb que se conecta desde localhost y su password es papus
+
+GRANT SELECT, INSERT, DELETE, UPDATE ON sampdb.* TO 'ale'@'localhost' IDENTIFIED BY 'papus';
+
+
+GRANT SELECT ON sampdb.* TO 'ale'@'localhost' IDENTIFIED BY 'papus';
+GRANT UPDATE (columna) ON sampdb.tabla TO 'ale'@'localhost'; -> es usuario solo lectura por sentencia anterior y solo puede modificar una columna
+
+GRANT USAGE ON *.* TO ale IDENTIFIED BY 'pepe'; -> cambia clave de ale sin tocar privilegios ya existentes
+GRANT USAGE ON *.* TO ale REQUIERE SSL;
+GRANT USAGE ON *.* TO ale WHITH MAX_CONNECTIONS_PER_HOUR 10;
+
+USAGE se usa para cambiar caracteristicas de una cuenta no relacionadas con los privilegios dejando los privilegios existentes aparte.
+
+
+SHOW GRANTS FROM 'ale'@'localhost'; -> muestra privilegios de ale
+SHOW GRANTS; -> muestra nuestros privilegios
+SHOW GRANTS FOR CURRENT_USER(); -> muestra nuestros privilegios
+
+REVOKE ALL PRIVILEGES, GRANT OPTIONS FROM 'ale'; -> elimina todos los privilegios de ale.
+DROP USER 'ale'@'localhost'; elimina el registro e la tabla user, elimina usuario
+
+Donde esta la carpeta de datos?
+-------------------------------
+se almacena en la variable datadir y se obtiene con el comando;
+mysqladmin variables 
+
+o con la sentencia sql 
+show variables like 'datadir';
+
+
+
+
+La carpeta de datos
+---------------------
+tiene todas las bases de datos y tablas que gestiona el sevidor
+	cada base de datos correspone con una carpeta de la carpeta de datos 
+	las tablas son los archivos que estan en las carpetas correspondientes a las bases de datos
+
+TRABAJANDO CON LA BASE
+-----------------------
+SHOW FULL TABLES FROM mi_base_de_datos; -> muestra todas las tablas
+
+desc articulo; -> muestra nombre de columnas de la tabla artículos
+
+VER COMO SON LAS TABLAS
+------------------------
+SHOW INDEXES FROM tabla;
+
+TRIGGERS
+-----------
+SHOW TRIGGERS \G -> \G se usa en vez de ; para finalizar la consulta
+
+IMPORTAR ARCHIVOS
+-------------------
+show variables like 'secure%';
+
+SET GLOBAL local_infile = 'ON'\G
+
+
+mysqlimport --ignore-lines=1 --fields-terminated-by=, --verbose --local -u root -p aplicaciones /Users/aleglozman/Documents/master\ UCM/base\ de\ datos\ SQL/tp\ final/paises.csv 
+
+CARGA DE ARCHIVOS EXTERNOS
+--------------------------
+Como cvs
+LOAD DATA LOCAL INFILE path_absoluto_ficheroINTO TABLE nombreTablaFIELDS TERMINATED BY ʹ;ʹLINES TERMINATED BY ʹ\nʹIGNORE 1 ROWS;
+
+select @@GLOBAL.secure_file_priv; -> muestra donde deben estar los archivos para que mysql los cargue sin poner toda la ruta
+
+
+Nuevos sitios
+--------------
+mysql>CREATE DATABASE basededatos;
+FLUSH PRIVILEGES;
+mysql> CREATE USER 'finley'@'localhost' IDENTIFIED BY 'some_pass';
+mysql> GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost'; -> da todos los privilegios al usuario ale en la base de datos TiendaInformatica
+
+Carrgar .sql
+mysql -u username -p database_name < file.sql
+

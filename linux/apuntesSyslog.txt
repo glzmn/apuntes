@@ -1,0 +1,170 @@
+syslogd es una utilidad del sistema que provee soporte para el registro de mensajes en sistemas *nix.
+Pero las bitácoras no están reservadas únicamente para las aplicaciones del sistema, 
+nosotros también podemos registrar mensajes usando syslogd o rsyslog,
+ configurando una regla apropiada en el archivo /etc/syslog.conf o /etc/rsyslog.conf.[2]
+
+
+El directorio /var/log contiene los logs principales:
+[root@CentOS-6 ~]# ls  -F /var/log/*
+/var/log/anaconda.ifcfg.log    /var/log/dracut.log
+/var/log/anaconda.log          /var/log/lastlog
+/var/log/anaconda.program.log  /var/log/maillog
+/var/log/anaconda.storage.log  /var/log/messages
+/var/log/anaconda.syslog       /var/log/secure
+/var/log/anaconda.yum.log      /var/log/spooler
+/var/log/boot.log              /var/log/tallylog
+/var/log/btmp                  /var/log/wtmp
+/var/log/cron                  /var/log/yum.log
+/var/log/dmesg
+
+/var/log/audit:
+audit.log
+
+Archivos de Configuración
+--------------------------
+ /etc/syslog.conf
+o
+ /etc/rsyslog.conf
+
+en estos archivos están definidas las reglas para las bitácoras usando syslogd, una regla por línea.  Cada regla sigue esta sintaxis:
+selector acción
+
+A su vez, el selector está compuesto de servicio.prioridad separadas por un punto: 
+una que indica el servicio que envía el mensaje y otra que marca su prioridad, separadas por un punto (.);
+ambas son indiferentes a mayúsculas y minúsculas.
+
+servicio.prioridad acción
+
+Servicio	Descripción
+--------        -----------
+auth		Mensajes de seguridad/autenticación
+authpriv	Mensajes de seguridad/autenticación (privado)
+cron		Demonio de tiempo (cron y at)
+daemon		Demonios del sistema sin valor de servicio separado
+kern		Mensajes del kernel
+lpr		Mensajes del servicio de impresión
+mail		Mensajes del servicio de correo
+mark		Para uso interno. No usar al hacer las reglas
+news		Mensajes del servicio de noticias USENET
+security 	(same as auth)	Obsoleto, usar auth
+syslog		Mensajes generados internamente por syslogd
+user		Mensajes genéricos a nivel de usuario
+uucp		mensajes de UUCP
+local0 a local7	Reservado para uso local
+
+
+Prioridad	Descripción
+---------       -----------
+debug		Usado para depurar servicios, por ejemplo si no están funcionando apropiadamente
+info		Usado para reportar mensajes informativos.
+notice		Como la prioridad info, pero haciendo notar algo que puede ser relevante
+warning		Usado para reportar advertencias. Puede darte pistas sobre errores (si los hubiera) o solo mostrarte que hay algo que no está trabajando como debería, pero que igual sigue funcionando.
+warn		Igual que warning
+err		Usado para reportar errores. Por ejemplo, si tienes un servicio mal configurado este reportará esos errores.
+error		Igual que err
+crit		Usado para reportar errores más críticos. Por ejemplo errores de hardware.
+alert		Usado para reportar errores aun más críticos. Se debe tomar algún correctivo inmediatamente. Por ejemplo, corrupción de una base de datos.
+emerg		Usado para reportar errores realmente críticos. Muy probablemente el servicio está inoperante
+panic		Igual que emerg
+none		Usado para deshabilitar el reporte de un servicio.
+
+Los mensajes serán reportados por prioridad, deforma ascendente.
+Por ejemplo, si se especifica la prioridad alert se reportarán los mensajes con prioridad alert, emer y panic,
+ mientras que los crit, error, hasta debug no serán reportados.
+
+La acción
+describe qué se debe hacer con el mensaje reportado. 
+Comúnmente, todos los mensajes son escritos a un archivo de bitácoras, pero también hay otras acciones como reenviar los mensajes a otra máquina.
+De forma que el campo acción puede ser uno de los siguientes:
+
+Acción				Descripción
+------                  	-----------
+/ruta/de/bitácora		Escribir los mensajes a un archivo de bitácoras
+| fifo				Usar un fifo o una tubería como el destino de los mensajes. Esto es útil para depuración o enviar correos. Note que el fifo debe ser creado con el comando mkfifo(1) antes de que syslogd(8) sea iniciado
+/dev/tty[1-6]			Escribir mensajes en las consolas /dev/tty[1-6]. Note que /dev/console también funcionará
+@192.168.0.1			Reenviar mensajes a la máquina 192.168.0.1 vía UDP. Debido a la naturaleza de UDP, probablemente se perderán mensajes en tránsito. Si esperas alto volumen de tráfico, debes esperar una pérdida considerable de mensajes. Nota: para aceptar mensajes, el servidor remoto debe correr syslogd con la opción -r (en Debian esta opción puede ser dada en el archivo /etc/default/syslogd o en el /etc/default/rsyslog)
+:omrelp:192.168.0.1:2514	Si quieres prevenir la pérdida de mensajes UDP, usa RELP
+lgallard, atorres		Lista de usuarios. Por defecto, los mensajes críticos son enviados a root
+
+Modificadores
+-------------
+Básicamente existen tres modificadores: =, ! y *. 
+
+El modificador “=” le indica a syslogd que debe reportar solo los mensajes con la prioridad exacta. Por ejemplo:
+mail.=error                       /var/log/mail.error
+
+Aquí syslogd reportará solo los mensajes de error. 
+Sin el modificador =, syslogd reportaría los mensajes tipo error, crit, alert y  panic. 
+Este modificador solo puede usarse con las prioridades.
+
+
+El segundo modificador “!” invierte el significado de la regla. Por ejemplo:
+mail.!error                       /var/log/mail.error
+Syslogd reportará los mensajes con menos prioridad que error, ergo warning, notice, info y debug.
+Si quieres excluir solo una prioridad, debes usar la combinación !=.
+
+
+el modificador “*” te permite seleccionar entre los distintos servicios y prioridades. Por ejemplo:
+mail.*                       /var/log/mail.log
+Aquí, todos los mensajes provenientes del servicio de correo serán guardados en el archivo /var/log/mail.log,
+no importando su prioridad. Otro ejemplo:
+*.info                       /var/log/info.log
+
+No importa el servicio, todos los mensajes cuya prioridad sean info serán guardados en el archivo /var/log/info.log.
+
+
+Operadores coma, y punto y coma
+-------------------------------
+El operador punto y coma te permite escribir varias reglas en una forma más compacta. Por ejemplo:
+
+mail.=info                       /var/log/info.log
+mail.=notice                     /var/log/info.log
+auth.=info                       /var/log/info.log
+
+Las reglas anteriores pueden ser escrita en una sola línea:
+
+mail.=info;mail.=notice;auth.=info   /var/log/info.log
+
+
+para seleccionar varios servicios, puedes usar el operador coma. Por ejemplo:
+mail.info                       /var/log/info.log
+auth.info                       /var/log/info.log
+
+Puedes escribir las reglas anteriores en una línea, de la siguiente forma:
+mail,auth.info                  /var/log/info.log
+La gran diferencia entre el operador coma y el operador punto y coma es que
+ el primero solo separa servicios y el ultimo puede separar prioridades y servicios, incluso si estos son incompatibles entre sí.
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+rsyslog
+-----------
+difiere un poco de syslog.conf porque tiene categorías.
+
+Categoría:\\
+
+Módulos:	 	Indica los módulos que se pueden cargar o descargar (es modular)
+Directivas Globales: 	Especifica todas las directivas que podemos expresar de forma global (empiezan con $)
+Reglas: 		Especifica las reglas que aplican con su acción determinada.
+Selección: 		Indica a qué categoría y tipo de prioridad (mail.debug)
+Acción: 		Indica qué hacer con el mensaje luego de pasar por la selección.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+Rotación de Logs
+---------------
+
+El directorio de configuración global se encuentra en /etc/logrotate.conf; sino, también, tenemos otro directorio en /etc/logrotate.d/logrotate.conf
+,dónde podremos poner individualmente cada configuración.
+
+Un archivo de configuración de logrotate, consiste en una serie de especificaciones para los grupos de archivos de log que vamos a administrar.
+Las opciones especificadas fuera de cada contexto de un log concreto, (errors, rotate, weekly…) se aplican a todos ellos, 
+pero pueden ser reemplazadas con una especificación concreta para un log en particular.
+
+Para que cada una de las configuraciones tenga efecto, se programa una entrada en el crontab del sistema, 
+para que corran cada determinado tiempo (/etc/crond.daily/logrotate).
+
+Comando Logrotate: Parámetros básicos: -d se utiliza para debug no hace nada -f fuerza la rotación -v nos da más información.
+
+
+

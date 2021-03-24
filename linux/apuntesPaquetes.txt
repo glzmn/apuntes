@@ -1,0 +1,34 @@
+aptitude update -> actualiza la lista de paquetes disponibles.
+aptitude safe-upgrade -> actualiza todos los paquetes que pueda sin tener que borrar otros paquetes o instalar otros nuevos. 
+aptitude full-upgrade -> actualiza el sistema borrando e instalando lo que sea necesario. Ojo, puede traer problemas.
+aptitude autoclean -> borra (no desisntala) los paquetes descargados que sean redundantes(se quedará con la última versión).
+aptitude clean -> borra los paquetes descargados.
+
+
+aptitude show paquete -> muestra la informacion disponible sobre ese paquete.
+aptitutde install -> instala el paquete o los paquetes que le indiqueis separados por espacios.
+aptitude reinstall -> reinstala el paquete o los paquetes que le indiqueis separados por espacios.
+aptitude remove -> borra el paquete o los paquetes que le indiqueis separados por espacios.
+aptitude purge -> borra el paquete o los paquetes junto con sus ficheros de configuración que le indiqueis separados por espacios.
+
+
+Opciones adicionales de aptitude:
+
+-s:simula las acciones pero no las realizará
+-d:sólo descargara los paquetes,no los instalará.
+-y:supone respuesta afirmativa a todas las preguntas simples.
+-f:trata de arreglar paquetes rotos de forma agresiva.
+
+
+/var/log/aptitude -> logs donde se pueden ver entre otras cosas ultimos paquetes instalados
+
+dpkg -s paquete -> dice nivel de parche del sistema
+dpkg -l -> Listar los paquetes instalados y sus versiones.
+apt-get autoremove -> elimina paquetes huerfanos, por ej paquetes que se añadieron como depecdencias de otros paquetes eliminados
+apt-listbugs paquete -> dice todas las notificaciones de error que tenga paquete
+apt-cache showpkg nombrePaquete -> muestra versiones instaladas, la ultima version disponible y los repositorios que estamos usando y las dependencias inversas del paquete (que paquetes dependen del paquete señalado)
+apt-cache dump -> lista todos los paquetes que hemos instalado
+apt-cache stats -> numero de paquetes instalados y numero total de dependencias
+apt-get check -> checkea si el sistema de paquetes esta eb buen estado
+apt-get clean -> elimina todos los pauetes ya instalados
+apt-get auto-clean -> elimina todos los paquetes que no pueden descargarse mas

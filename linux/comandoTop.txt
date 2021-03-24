@@ -1,0 +1,5 @@
+M -> ordena por consumo de memoria
+P -> ordena por consumo de cpu
+1 -> muetra uso de cpu las cpu separadas o juntas
+D -> cambiar segundos de refresco, por default son 5 segundos
+N -> decir cuantos procesos ver

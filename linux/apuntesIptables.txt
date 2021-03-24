@@ -1,0 +1,364 @@
+resolv.conf
+search cyberneticos.com
+nameserver 85.17.150.123
+nameserver 85.17.96.69
+nameserver 85.17.150.123
+
+
+
+
+iptables -L -> para ver si hay reglas de firewall
+iptables -Ln -> lista reglas con hostname
+
+
+
+Tenemos tres tipos de reglas en iptables:
+- MANGLE: PREROUTING, POSTROUTING, INPUT, OUTPUT, FORWARD
+- NAT: reglas PREROUTING, POSTROUTING, OUTPUT
+- FILTER: reglas INPUT, OUTPUT, FORWARD.
+
+	
+COMANDO
+iptables [-t tabla] comando [match] [objetivos/saltos]
+tabla por defecto es filter
+
+AÑADIR O MANIPULAR CADENAS
+iptables -N -> crea nueva cadena o chain vacia
+iptables -X -> Elimina una chain que este vacia
+iptables -F -> Vacia una chain, elimina todas las reglas de una chain
+iptables -P -> cambia politica por defecto de una chain
+iptables -L -> lista las reglas de una chain
+iptables -Z -> Pone a cero las variables de auditoria
+
+MANEJAR REGLAS DE LAS CADENAS
+iptables -A -> inserta al final de una cadena una nueva regla
+iptables -I -> inserta al comienzo de una chain una nueva regla
+iptables -R -> Remplaza una regla de una chain
+iptables -D -> Elimina una regla de una chain pudiendo indicar su orden o condicion
+
+ESTABLECER LAS CONDICIONES O ACCIONES SOBRE CADA REGLA
+iptables -s -> indica un dominio o ip (rangos de ip) sobre los que se evalua la condicion de la regla
+iptables -d -> indica un dominio o ip (rango de ip) de destino al que se evalua la condicion de la regla
+iptables -i -> indica la interface de entrada sobre la cual se evalua la regla
+iptables -o -> indica la interface de salida sobre la cual se evalua la regla
+iptables -p -> indica el protocolo del datagrama que concordara con esta regla
+
+nombres validos de protocolo son tcp, udp, icmp o numero si se conoce el numero de protocolo ip
+cada protocolo lleva asociado sus propios modificadores a travez de las extenciones correspondientes
+
+extenciones de TCP
+sport -> especifica el puerto que debe utilizar el origen del datagrama para concordar con la regla (rango -> 20:25) (! puede usarse para negar)
+dport -> igual a sport pero para destino
+tcp-flags: especifica mediante una mascara si bits indicadores de tcp que deben concordar. (SYN, ACK, FIN, RST, URG, PSH, ALL o NONE)
+syn -> datagramas cuyo bit SYN valga 1 y cuyos bit ACK y FIN valgan ambos 0. abrebiatura de --tcp-flags SYN,RST,ACK,SYN
+
+extenciones de UDP
+sport -> especifica el puerto que debe utilizar el origen del datagrama para concordar con la regla (rango -> 20:25) (! puede usarse para negar)
+dport -> igual a sport pero para destino
+
+extencion ICMP
+icmp-type -> puede especificarce tipo de mensaje ICMP tanto por su numero como por los siguientes indicadores: echo-request, echoreply, source-quench, time-exceeded, destination-uncreachable, network-unreachable, host-unreachable, protocol-unreachable y port-unreachable
+
+extencion MAC
+mac-source -> se especifica la direccion mac (ethernet) solo tiene sentido en las cadenas INPUT y FORWARD
+iptables -f -> cuando se fracciona un datagrama porque supera el MTU de la red. podemos utilizar esta opcion para especificar acciones sobre le segundo y restantes fragmentos del datagrama.
+iptables i -> invierte el valor logico de la condicion de la regla
+
+hay mas posibilidades de filtrado
+
+OBJETIVOS
+tratamiento que se le dara al flujo de informacion que pasa por el firewall
+
+OBJETIVO ACCEPT
+la regl ce acepta y el paquete no continua atravezando ni la cadena actual ni cualquier otra de la misma tabla.
+sigue atravezando cadenas de otras tablas y podria ser denegado por alguna de estas 
+-j ACCEPT
+
+OBJETIVO DNAT
+efectua traducciones de direcciones de red de destino. se emplea para reescribir la direccion ip de un paquete.
+en cuanto un paquete coincide con la comparacion, este paquete y todos los paquetes pertenecientes a es mismo flujo de datos veran modificada su direccion de destino y seran redirigidos a la red/host/dispositivo adecuado
+se puede usar para cuando tienes un host ejecutando un ap0ache en un servidor local con una ip privada, se le indica al firewall que cuando reciba paquetes al puerto 80 los reenvie al servidor web local 
+puede especificarce todo un rango de ips destino y el mecanismo DNAT eligira aleatoriamente la ip de destino para cada flujo de datos lo cual se puede usar para valanceo de carga
+este objetivo solo esta disponible en las chains PREROUTING y OUTPUT de la tabla NAT, asi como aquellas cadenas a las que las dos anteriores hayan dirigido un salto
+ej
+iptables -t nat -A PREROUTING -P TCP -D 15.45.23.67 --dport 80 -j DNAT --to-destination 192.168.1.1
+
+OBJETIVO SNAT
+efectua traducciones de direccion de red de origen, osea que rescribe la direccion ip de origen de la cabecera ip del paquete 
+se usa cuando varios host deben compartir la direccion ip publica
+se aplica el reenvio de paquetes ip a nivel de nucleo y escribir una regla snat que cambiara la direccion ip de origen de todos los paquetes que salgan de la red local 
+solo vlido en la tabla nat y dentro de la cadena postrouting
+solo el primer paquete de una conexion es modificado por snat, los demas paquetes pertenecientes a la misma conexion seran modificados de la misma manera que el primero
+el primer paquete llega al firewall y entra en la tabla nat donde pasa primero por la cadena prerouting y se le modifica la direccion de destino con dnat, luego llega a postrouting y se le modifica ip de origen con snat, luego sigue por el resto de tablas, cadenas y reglas
+los siguientes paquetes del mismo flujo ni siquiera tocan la tabla nat sino que se le aplican directamente las mismas traducciones que al primer paquete
+por esto no se recomienda usar filtros en tabla nat
+--to-source -> direccion origen que debe usar el paquete
+ej
+iptables -t nat -A POSTROUTING  -p tcp -p eth0 -j SNAT --to-source 194.236.50.155-194.236.50.160:1024-32000
+
+
+OBJETIVO MASQUERADE
+se usa como objetivo SNAT pero sin requerir ninguna opcion --to-source
+se creo para trabajar con conexiones telefinicas estandar dial-up o con conexiones dhcp
+solo debe usarse con conexiones ip dinamicas, osea que no sabemos que direccion tenemos hasta conectarnos al isp
+significa que se establece la direccion ip usada por una placa de red especifica en vez de --to-source
+las conexiones se pierden si la interface se viene abajo
+solo es valido en POSTROUTING de la tabla nat
+opcion --to-ports -> se usa para puertos de origen de los paquetes salientes, solo valido para --protocol tcp o udp
+ej
+iptables-t nat -A POSTROUTING -p TCP -j MASQUERADE --TO-PORTS 1024-31000
+
+
+OBJETIVO DROP
+desecha paquetes y no sigue procesandolos. el objetivo no enviará ninguna informacion en ninguna direccion, ni siquiera a intermediarios como routers, es como si el paquete nunca hubiera existido
+
+OBJETIVO REJECT
+funciona como el drop pero en este caso se devuelve un mensaje de error al host que envio el paquete bloqueado.
+es valido solo en las cadenas INPUT, FORWARD Y OUTPUT o sus subcadenas
+opcion --reject-whith -> indica que respuesta devolver al host que envia el paquete que estamos rechazando
+ej
+iptables -A FORWARD -p TCP --dport 22 -j REJECT --reject-whith tcp-reset
+tipos de rechazos disponibles (icmp-net-unreachable, icmp-host-unreachable, icmp-port-unreachable, icmp-proto-unreachable, icmp-net-prohibited y icmp-host prohibited) el de defecto es port-uncreachable
+esta tambien echo.replay solo para reglas que capten icmp ping 
+tcp-reset solo puede usarce con tcp
+
+OBJETIVO REDIRECT
+sirve para redirigir paquetes y flujos hacia la maquina
+puede usarse para redirigir todos los paquetes destinados a los puertos HTTP hacia un cache HTTP como squid o hacia nuestro host
+muy recomendable para servicio de cache transparente 
+solo funciona en las chains PREROUTING y OUTPUT, ambas de la tabla nat
+--to-ports -> puerto o rango de puertos destino que se deben usar, sin esta opcion puerto de destino nunca se modifica
+ej
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to.ports 8080
+
+OBJETIVO RETURN
+hace que el paquete que esta atravezando una cadena pare alli donde se encuentre con el objetiv, 
+si esta en una subcadena el paquete seguira atravezando la cadena superior desde donde la dejo
+si es una cadena principal se ejecutara la politica por defecto sobre el paquete
+ej
+un paquete entra en la cadena INPUT y llega a una regla que coincide con su comparcion y que tiene como accion --jump CADENA_DE_EJ hasta que llega a otra cadena que coincide con su comparacion y cuyo objetivo sea --jump RETURN, entonces volvera a la cadena INPUT y seguira desde la regla siquiente a la que produjo el salto
+ej2
+el paquete llega a una regla de INPUT que coincide y tiene la accion --jump RETURN entonces se aplica la politica por defecto y abandona esa cadena para seguir con el resto de cadenas de la tabla si las hay
+
+
+OBJETIVO LOG
+registra info detallada sobre los paquetes como la mayoria de las cabeceras ip y otros datos interesantes.
+trabaja a travez de syslogd y puede ser leida con los registros de dmesg u otros programas similares.
+se usa para depurar y afinar conjuntos de reglas
+tambien se usa para remplazar el objeivo drop en etapa de testeo
+ULOG escrive los registros en bd mysql
+opciones
+--log-level
+ej
+iptables -A FORWARD -p tcp -j LOG --log-level debug
+niveles de registro aceptables los de syslog.conf (debug, info, notice,warning, warn,err,error, crit, alert, emeg y panic)
+--log-prefix
+ej
+iptables -A FORWARD -p tcp -j LOG --log-prefix "INPUT packets"
+le dice a iptables que use prefijo definido a todos los mensajes del registro para luego poder usar herramientas como grep
+el prefijo puede tener hasta 29 caracteres incluyendo espacios en blanco y caracteres especialrs
+--log-tcp-sequence
+:msg, contains, “iptables: ” -/var/log/firewall/iptables.log
+& ~
+añade los numeros de secuencia tcp a cada mensaje de registro
+--log.tcp-options
+registra las diferentes opciones presentes en las cabeceras de los paquetes tcp y se usa para depurar fallos
+--log-ip-options
+registra la mayoria de opciones presentes en las cabeceras ip
+
+OBJETIVO MARK
+se usa para establecer marcas ne netfilter asociadas a paquetes especificos.
+solo valido en tabla mangle 
+los valores de estas marcas pueden usarse con el enrutamiento avanzado de linux
+el valor de la marca es un valor que se le da al paquete dentro del nucleo de linux
+--set-mark
+ej
+iptbles -t mangle -A PREROUTING -p tcp --dport 22 -j MARK --set-mark 2
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------
+## FLUSH de reglas
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+
+------------------------------------------------------------------------------------
+## Establecemos politica por defecto ACCEPT
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+
+## o
+
+## Establecemos politica por defecto: DROP
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+## Empezamos a filtrar? no! empezamos a abrir! porque ahora esta TODO denegado.
+## Debemos decir de manera explicita qué es lo que queremos abrir
+
+------------------------------------------------------------------------------------
+##Algunos filtros utiles
+
+## Empezamos a filtrar
+# Operar en localhost sin limitaciones (por ejemplo conexiones locales a mysql)
+/sbin/iptables -A INPUT -i lo -j ACCEPT
+/sbin/iptables -A OUTPUT -o lo -j ACCEPT
+
+# A nuestra IP le dejamos todo
+iptables -A INPUT -s 195.65.34.234 -j ACCEPT
+iptables -A OUTPUT -d 195.65.34.234 -j ACCEPT
+
+# Este es el servicio que DA la maquina a internet, por tanto todo paquete entrante se acepta para
+# ese puerto y los salientes vinculados se aceptan.
+/sbin/iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp -m tcp --sport 80 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Permitimos que la maquina pueda salir a la web
+/sbin/iptables -A INPUT -p tcp -m tcp --sport 80 -m state --state RELATED,ESTABLISHED -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
+
+# Ya tambien a webs seguras
+/sbin/iptables -A INPUT -p tcp -m tcp --sport 443 -m state --state RELATED,ESTABLISHED -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT
+
+
+# Permitimos la consulta a un primer DNS
+/sbin/iptables -A INPUT -s 211.95.64.39 -p udp -m udp --sport 53 -j ACCEPT
+/sbin/iptables -A OUTPUT -d 211.95.64.39 -p udp -m udp --dport 53 -j ACCEPT
+
+# Permitimos la consulta a un segundo DNS
+/sbin/iptables -A INPUT -s 211.95.79.109 -p udp -m udp --sport 53 -j ACCEPT
+/sbin/iptables -A OUTPUT -d 211.95.79.109 -p udp -m udp --dport 53 -j ACCEPT
+
+
+
+
+# Barrera de backup por si cambiamos a modo ACCEPT temporalmente
+# Con esto protegemos los puertos reservados y otros well-known
+/sbin/iptables -A INPUT -p tcp -m tcp --dport 1:1024 -j DROP
+/sbin/iptables -A INPUT -p udp -m udp --dport 1:1024 -j DROP
+/sbin/iptables -A INPUT -p tcp -m tcp --dport 1723 -j DROP
+/sbin/iptables -A INPUT -p tcp -m tcp --dport 3306 -j DROP
+/sbin/iptables -A INPUT -p tcp -m tcp --dport 5432 -j DROP
+
+---------------------------------------------------------
+
+otros ejemplos
+
+
+#impediremos el paso de cualquier paquete TCP proviniente del
+#exterior que intente establecer una conexión con nuestro 
+#equipo.   Estos   paquetes   se   reconocen   por   tener   el   flag   SYN
+#asertado y los flags ACK y FIN desasertados.
+#vemos también el uso de una opción del target REJECT, que
+#nos   permite   elegir   de   qué   manera   debe   ser   rechazado   el
+#paquete. Posibles valores son icmp­net­unreachable, icmp­host­
+#unreachable, icmp­port­unreachable, icmp­proto­ 
+#unreachable, icmp­net­prohibited y icmp­host­prohibited.C
+/sbin/iptables ­A INPUT ­p tcp ­­syn ­j REJECT ­­reject­with
+icmp­port­unreachable
+
+#recibir las   respuestas   de   nuestro/s   servidor/es   DNS   cuando   nuestro
+#sistema les realice alguna consulta.
+/sbin/iptables ­A INPUT ­p udp ­­source­port 53 ­j ACCEPT
+/sbin/iptables -A udp_packets -p UDP -s $DHCP_SERVER_IP --sport 67 \ --dport 68 -j ACCEPT
+
+
+#Prohibimos ahora el resto del tráfico UDP
+#La regla de por sí  implica a todo el tráfico UDP,
+#pero como un paquete sólo activará esta regla si no ha 
+#activado   la   anterior,   los   paquetes   UDP   referentes   a   una
+#transacción con un servidor de nombres no se verán afectados
+/sbin/iptables ­A INPUT ­p udp ­j REJECT ­­reject­with icmp­port­unreachable
+
+----------------------------------------------------------------------------
+
+Guardar y reusar nuestra configuración de iptables
+si una vez realizadas estas configuraciones, apagásemos nuestro equipo, todo esto se perdería
+Para evitar esto, iptables cuenta con dos programas auxiliares:
+iptables­save   e   iptables­restore,   el  primero   de   los   cuales   nos
+permite   sacar   por   salida   estándar   el   contenido   de   nuestras
+tablas   IP,   y   el   seguno   nos   permite,   a   partir   de   la   salida
+generada  por  iptables­save,  recuperar  la  configuración  de  las
+tablas
+
+volcar la configuración de nuestro firewall en un fichero
+Donde ­c es una opción que nos permite guardar los contadores del número de paquetes que activaron cada regla.
+$/sbin/iptables­save ­c > [fichero]
+
+recuperar la configuración del firewall
+/sbin/iptables­restore ­c < [fichero]
+
+Permitir peticiones DHCP a través de iptables
+
+IPTABLES  -I INPUT -i $LAN_IFACE -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+
+
+
+
+
+
+---------------------------------------------------------------------------------------
+LOGEANDO ACTIVIDAD
+http://blog.desdelinux.net/logueando-toda-actividad-con-iptables/
+
+1- Debemos crear el archivo “iptables.log” dentro de la carpeta “/var/log/firewall” que debemos crearla, pues tampoco existe.
+
+mkdir -p /var/log/firewall/
+touch /var/log/firewall/iptables.log
+
+2- Permisos, muy importante…
+
+chmod 600 /var/log/firewall/iptables.log
+chown root:adm /var/log/firewall/iptables.log
+
+3- Rsyslog, el demonio de logueo de Debian, lee la configuración desde “/etc/rsyslog.d“, por lo que debemos crear un archivo que yo llamaré “firewall.conf” desde el cual rsyslog, pueda interpretar lo que queremos hacer.
+
+touch /etc/rsyslog.d/firewall.conf
+
+Y dentro le dejamos caer suavemente el siguiente contenido:
+
+:msg, contains, “iptables: ” -/var/log/firewall/iptables.log
+& ~
+
+Ni tengo ni la menor idea, ¿qué hacen este par de líneas?
+
+La primera línea chequea los datos logueados buscando la cadena “iptables: ” y lo añade al archivo “/var/log/firewall/iptables.log“
+
+La segunda, detiene el procesamiento de la información logueada con el patrón anterior para que no siga siendo enviada a “/var/log/messages“.
+
+4- Rotando el fichero de logs, con logrotate.
+
+Debemos crear dentro de “/etc/logrotate.d/” el archivo “firewall” el cual contendrá el siguiente contenido:
+
+/var/log/firewall/iptables.log
+{
+rotate 7
+daily
+size 10M
+dateext
+missingok
+create 600 root adm
+notifempty
+compress
+delaycompress
+postrotate
+invoke-rc.d rsyslog reload > /dev/null
+endscript
+}
+
+Para así poder rotar los logs 7 veces antes de borrarlos, 1 vez al día, tamaño máximo del log 10MB, comprimido, con fecha, sin dar error si el log no existe, creado como root.
+
+5- Reiniciar, como todo final feliz xD, el demonio rsyslog:
+
+/etc/init.d/rsyslog restart

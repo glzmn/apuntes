@@ -1,0 +1,86 @@
+/proc -> directorio que unifica archivos con procesos
+	ninguno de los archivos que estan en /proc ocupan realmente espacio en disco sino que son generados dinamicamente en tiempo real por el kernel
+	
+	los numeros son directorios que representan los procesos que se estan ejecutando en el sistema
+	dentro de cada uno de estos directorios hay archivos como
+	cmdline -> muestra la linea de comandos que ejecuto el proceso
+	status -> proporciona info obre el estado interno del proceso
+	cwd -> enlaza con el directorio de trabajo actual de este proceso
+
+
+ps -ax -> mustra procesos que dependn de nuestra tty
+ps -x -> muestra procsos qe no dependen de ninguna tty
+ps -e -> muestra todos los procesos que se estan ejecutando en el sistema
+ps -j -> vizualiza informacion con formato de control de tareas ( incluye pid padre, id de grupo, id de sesion, etc)
+ps -C nombre -> busca procesos que su nombre contenga nombre
+ps -p n -> n es numro de proceso
+ps -r -> muestra procesos en estado ejecutale (estado R)
+ps -u uid -> muestra todos los procesos del usuario de id uid
+ps -aux -> muetra todos los procesos que posean nombre de usuario
+ps -axf | more -> muestra todas las gerarquies de procesos que hay en el sistema
+ps -l -> muetra listado extendido de procesos
+	campos que devuelve
+		F -> indicadores asociados al proceso. Indica cosas similares a si el proceso es de usuario o de kernel y por que se ha detenido o dormido el proceso
+		UID -> id de usuario propietario del proceso
+		PID -> id del proceso
+		PPID -> i del proceso padre
+		PRI -> prioridad del proceso
+		NI -> valor de nice
+		VSZ -> tamaño virtual: tamaño de la imágen en memori del proceso (código + datos + pila) medido en bloques
+		RSS -> tamaño del conjunto residente, cantidad de memoria fisica en kilobytes sin incluir el espacio que requiere la tabla de paginas ni la estructura de tareas  del kernel para el proceso
+		WCHAN -> canal de espera, nulo para procesos en ejecucion o dispuestos para la ejecucion, para los procesos dormidos o en espera este campo enumera el evento al que espera el proceso, la funcion del kernel en la que reside el proceso
+		STAT -> Estado de proceso
+		TTY -> Terminal a la que esta asociado el proceso
+		TIME -> Tiempo en que el proceso esta en ejecucion o el tiempo que llevava en ejecucion antes de pasar a ser detenido
+		COMMAND -> linea de ordenes que se ha empleado para poner en marcha elproceso. La opcion -f es impresindible si se desea ver la linea de ordenes completa
+
+
+
+estados posibles de un proceso
+-------------------------------
+
+D -> Sueño no interrumpible (normalmente haciendo E/S o en espera d ela misma)
+N -> Proceso de baja prioridad (proceso al que se le ha aplicado nice)
+R -> Proceso ejecutable: esta a la espera de que se le planifique para utilizar la CPU
+S -> Dormido
+T -> En seguimiento o detenido
+Z -> Proceso zoombie
+W -> Proceso que se ha intercambiado totalmente a disco, no posea paginas residentes
+
+
+top
+-----
+programa interactivo para observar la UCP en tiempo real
+comandos interactivos:
+
+	n -> vizualizar proceso de pid particular
+	k -> eliminar proceso de pid particular
+	
+
+
+
+Procesos primer y segundo plano
+-------------------------------
+-procesos de segundo plano se ejecutan con menor prioridad uqe los d eprimer plano
+-Una tarea es un proceso que no esta en primer plano pero solo se puede acceder al mismo desde la terminal que esta asociado
+$proceso & -> ejecuta proceso en segundop plano
+		esto devuelve un numero entre corchetes (n1) seguido de otro numero (n2)
+		n1 -> numero de tarea corrspondiente al proceso
+		n2 -> pid del porceso
+
+
+fg -> trae a primer plano un proceso que se ejecuta en segundo plano
+	fg % -> tarea actual
+	fg %n -> tarea numero n
+	fg %nombre -> tarea que empieza por nombre
+	fg %?nombre -> orden que contiene nombre
+
+bg -> mandar a segundo plano procesos de primer plano o suspendidos
+	fg % -> tarea actual
+	fg %n -> tarea numero n
+	fg %nombre -> tarea que empieza por nombre
+	fg %?nombre -> orden que contiene nombre
+
+jobs -> muestra el estado de los procesos suspendidos y en segundo plano
+
+

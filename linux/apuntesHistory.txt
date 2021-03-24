@@ -1,0 +1,29 @@
+Comando History & fc
+
+history -> muestra todas las entradas del archivo del historial que se guarda en ~/.bash_history.
+
+por defecto son 1000 se cambia en /etc/profile o  ~/.profile la variable HISTSIZE
+
+La variable HISTCMD proporciona el índice dentro del historial comando que se está ejecutando. La variable HISTFILE especifica el nombre del fichero que contendrá el historial (~/.bash_history por defecto). La variable HISTFILESIZE especifica el máximo número de líneas que contendrá el archivo especificado en HISTFILE y, aunque suele tener el mismo valor que HISTSIZE, podría ser diferente ya que ésta última se refiere solo al histórico de la sesión actual y no al tamaño total del archivo histórico.
+
+fc proporciona otra opción para editar los comandos del fichero histórico antes de ejecutarlos
+Podemos llamar a fc utilizando como parámetro el número del comando que queremos editar 
+o, también, con un rango de comandos para, de esta forma, editarlos y ejecutarlos en conjunto.
+ También podemos especificar el editor de textos a utilizar. 
+Una vez que llamamos a fc el archivo de comandos puede ser editado como cualquier otro archivo de texto y los comandos editados se ejecutarán al salir del editor.
+La opción -l la utilizamos para mostrar una lista de los valores especificados a continuación, podemos escribir, por ejemplo, fc -l 50 60 y obtenemos la lista de los comandos del 50 al 60 en el historial.
+
+Tabla 1-2. Operadores de expansión del historial de comandos
+Operador: Descripción
+!!: También conocido como bang-bang,[1] este operador hace referencia al comando más reciente del historial.
+!n: Hace referencia al comando número n del historial. 
+	Puedes utilizar el comando history para conocer estos números.
+!-n: Hace referencia al comando actual menos n en el historial.
+! cadena: Hace referencia al comando más reciente que comience por cadena.
+!? cade: Hace referencia al comando más reciente que contenga cadena.
+^ cadena1^cadena2:Sustitución rápida. Repite el último comando reemplazando la primera aparición de cadena1 por cadena2.
+
+95.211.109.197
+
+85.17.150.123
+85.17.96.69

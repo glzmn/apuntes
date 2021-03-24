@@ -1,0 +1,61 @@
+Directorio de buzon
+	Los diferentes usuario tendran buzones en
+		/var/spool/mail (fedora 11)
+		o /usr/spool/mail
+
+Encabezado del mail
+	to: mail o mails del destinatario o destinatarios del mensaje
+	From: mail del remitente del mensaje
+	Cc: mail o mails de los destinatarios adicionales
+	Attch: 
+		enumera los posibles anexos que pudiera tener el mensaje, normalmente
+		en forma de archivos externos
+	Subject: Asunto o proposito del mensaje
+
+Prgrama mail (sistema de mail basado en liena)
+	mail (comando para ingresar al programa, muestra la bandeja de entrada)
+		-s (muestra Subject)
+		-c dir (envia calco a la direccion dir)
+		-b dir (envia calco anonimo a la direccion dir)
+		-t (muestra el campo to)
+		-V (muestra detalles de la entrega en modo verboso)
+		para enviar correos
+			-h (muestra primero una pantalla de encabezados de mensajes)
+			-P (muestra todos los mensajes con sus encabezados completos)
+			nombreUsuario (envia mail a usuario del sistema)
+				primero se escribe el subject
+				lugo cuerpo de mensaje
+				^D (en linea en blanco) para terminar mensaje y enviar
+			nombreUusuaro < archivo.txt (envia archivo.txt a nombreUsuario)
+			-s "subject" nombreUsuario (subject es el subject del mensaje)
+			-v nombreUsuario (mustra detalles del envio)
+	Responder y reenviar
+		r# (dentro del programa mail r# mail a responder)
+		~f# 
+			dentro del programa mail abrir un nuevo mail, sabiendo 
+			que el mail que queremos reenviar es el nº7 dentro
+			del cuerpo del mensaje ponemos ~f7 y ahi se insertará
+			el mail a reenviar
+			~ es un prefijo de una orden especial dentro de un mail.
+		Archivos adjuntos
+			~f nombreArchivo incluye contenido de archivo en el mensaje
+			mail a@a.com < archivo.txt (en la linea de comandos)
+	dentro del programa:
+		1 (muestra mensaje 1)
+		2 (muestra mensaje 2)
+		d 1 (elimina mensaje 1)
+		q (sale del programa)
+	
+	Lectura del correo
+		- (Muestra el contenido del mensaje anterior)
+		? (ayuda del programa mail)
+		r # (responder al remitente del mensaje nº#)
+		d # (borra mensaje nº #)
+		t # (escribe en pantalla el contenido del mnsaje nº #)
+		n (pasa el mnsaje n y muestra su contenido en pantalla)
+		p # (imprime el contenido del mensaje nº #)
+		q (salir)
+		s # nombreArchivo (guarda el mensaje nº # en nombreArchivo)
+	Alias (archivo .mailrc)
+		alias ag alejandroglozman@pepe.com
+		

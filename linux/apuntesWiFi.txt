@@ -1,0 +1,81 @@
+Si tenemos WEP 
+-------------------
+iwconfig
+iwlist wlan0 scan
+ifconfig wlan0 up
+iwconfig wlan0 essid elnombredelaESSID
+iwconfig wlan0 key s:lacontraseña
+dhclient wlan0
+
+
+AUTOMATIZAR
+vi /etc/init.d/iniciowifi.sh
+#!/bin/bash
+ifconfig wlan0 up
+iwconfig wlan0 essid elnombredelaESSID
+iwconfig wlan0 key s:lacontraseña
+dhclient wlan0
+
+
+Si tenemos WPA 
+--------------------------
+#wpa_passphrase mi_wifi clave-de-acceso > /home/usuario/wpa.conf
+#wpa_supplicant -B -Dwext -iwlan0 -c/home/usuario/wpa.conf 
+
+
+#dhclient -r (limpiar) 
+#dhclient wlan0
+
+----------------------------------------------------------------------------
+
+chmod 0755 /etc/init.d/iniciowifi.sh -> hacerlo ejecutable
+update-rc.d iniciowifi.sh defaults -> para el arranque
+
+--------------------------------------------------------------
+iwconfig wlan0 channel 6 -> Fijamos el canal elegido para nuestra tarjeta
+iwconfig wlan0 freq 2.412G -> Fijamos el valor de frecuencia para nuestra tarjeta
+canal 1= 2.412G    canal 2= 2.417G     canal 3= 2.422G
+canal 4= 2.427G    canal 5= 2.432G     canal 6= 2.437G
+canal 7= 2.442G    canal 8= 2.447G     canal 9= 2.452G
+canal 10= 2.457G   canal 11= 2.462G    canal 12= 2.467G
+canal 13= 2.472G   canal 14= 2.484G
+
+iwconfig wlan0 rate 11M -> Fijamos la velocidad en las comunicaciones para 802.11b. Podemos también utilizar 54M. O ponerlo en modo automático. iwconfig wlan0 rate auto Para que la tarjeta elija la velocidad adecuada, incluso iwconfig wlan0 rate 54M auto
+
+iwconfig wlan0 frag 4096 -> frag valorfragmentacion
+
+iwconfig wlan0 power period 60 -> Tiempo actividad la tarjeta cuando no se utiliza alguna conexión a red. Por lo tanto en modo monitor la captura de datos caería a la hora.
+
+otras opciones del comando iwconfig: power timeout, txpower N, commit, rts, nwid, ap, sens, nick, enc
+
+ifconfig wlan0 down
+iwconfig wlan0 mode monitor -> modo promiscuo
+iwconfig wlan0 mode maneged -> modo normal
+
+
+
+sniffamos
+ifconfig wlan0 0.0.0.0
+tcpdump -i wlan0 -n   
+
+comando iwlist
+--------------
+iwlist wlan0 scan -> Nos mostrara información de todas las redes inalámbricas que nuestra tarjeta detecta. En modo monitor dará cero resultados. 
+iwlist ath0 frequency -> Nos mostrara los diferentes valores de frecuencia y su correspondencia en el numero de canal validos para nuestra tarjeta así como la frecuencia y el canal en el que se encuentra en esos momentos la tarjeta.
+iwlist ath0 channel -> idem frequency
+iwlist ath0 rate -> Nos indica las velocidad de comunicación que nuestra tarjeta soporta así como la velocidad actual (mediante current bit rate)
+accespoints:
+key
+power
+txpower
+retry
+ap
+peers
+event
+
+
+Airmon-Ng
+The first tool we will look at and need in nearly ever WiFi hack is airmon-ng, which converts our wireless card into a promiscuous mode wireless card.
+
+
+

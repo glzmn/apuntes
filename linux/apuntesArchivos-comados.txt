@@ -1,0 +1,100 @@
+cd -> cambia de directorio
+	cd /etc
+	cd ~
+	cd $HOME
+	cd
+	cd..
+ls -> mustra lista de archivos y directorios que hay dentro de un directorio espesificado
+	-F -> Permite ver tipo de archivo
+		/ despues de los directorios
+		* despues de los ejecutables
+		@ despues de los vinculos simbolicos.
+	-a -> mustra archivos ocultos
+	-i -> mustra numero de inodo
+	-R -> lista recursivamente los subdirectorios encontrados
+	-C -> Lista en columnas
+	-r -> invierte orden de clasificacion
+	-u -> mustra tiempo de ultimo acceso en vez del de ultima modificacion
+	-x -> clasifia por la extension de los archivos
+	-t -> clasifica por el tiempo
+	-l -> muestra detalles como permisos, numero de vinculos, propitario, grupo
+		tamaño y hora de modificacion
+	
+mkdir -> crea directorios
+	-m MODE crea un directorio con los permisos de acceso dados
+	-p crea los directorios padre que no existan y se encuentren en la ruta dada
+
+rmdir -> elimina directorios
+	-p elimina los directorios padres especificados en la ruta dada y que esten vacios
+
+file-> idenifica los tipos de archivos que contiene le directorio espesificado
+
+rm -> borra archivos
+	-r -> boora el directorio con todos sus archivos
+	-i -> pregunta antes de borrar
+	-f -> (force), borra aunque este en uso
+	-d -> borra directorios con unlink, no con rmdir
+	-u -> muestra el nombre de cada fichero antes de borrarlo
+
+touch -> crea archivos vacios
+
+mv [opciones] origen destino -> copia archivos o renombra si destino no es un directorio
+	-f -> no pide confirmacion
+	-i -> pide confirmacion
+	-V -> muestra nombre de cada fichero antes de moverlo
+	-b -> hace backup de ficheros a punto de sobreescribirse
+
+cp -> igual a mv pero archivo origen queda donde esta
+	-f -> borra archivos existentes si es necesario
+	-i -> pide confirmacion antes de sobreescribir
+	-p -> nuevo fichero conserva permisos, fechas y propietarios
+	-R -> copia recursivamente directorios
+
+ln [opciones] origen [destino] -> crea enlaces -en principio- duros entre directorios
+	-f -> pisa ficheros destino que existan
+	-i -> pregunta antes de pisar ficheros destino
+	-d, -F -> permite a root hacer enlaces duros a directorios
+	-s -> hace enlaces blandos (punteros al archivo)
+
+updatedb -> actualiza la base de datos del sistema de archivos paro poder usar locate
+
+locate [opciones] nombre -> busca archivos
+
+find [desde donde] -> busca archivos
+	-name -> busca archivos de nombre especificado
+	-inum # -> busca archivos cuyo nº de inodo sea #
+	-links # -> busca archivos con nº de vinculos #
+	-newer archivo -> busca archivos modificados despues que archivo
+	-perm octal -> busca archivos cuyo permiso de acceso sea octal
+	-user nombre -> busca archivos cuyo propietario sea nombre
+
+grep palabra archivo -> muestra las lineas enteras donde en archivo aparece palabra
+	-i -> no casesensitive
+	-v -> busca todo lo que no contenga palabra
+	ls -l | grep .txt -> muetra todos los archivos .txt del directorio actual
+
+mount -> monta sistemas de archivos, al usar este comando fedora modifica /etc/fstab, 
+	 la tabla del sistema de archivos.
+	 Es recomendable montar los sistemas de archivos en /mnt o cdrom en /mnt/cdrom/
+	 sintaxis:
+	 	mount -t tipo sistema-de-archivos-a-montar punto-de-montaje
+		1. tipo: tipo de sistema de archivos como ext2, ext3, vfat, iso9660,
+		   hpfs. hfs, ntfs. Para muchos sistemas de archivos linux los reconce y
+		   no hace falta usar -t.
+		2. sistema de archivos a montar: nombre del dispositivo del sistema del
+			sistema de archivos que queremos montar, normalmente en forma 
+			/dev/hdx, /dev/scx, o /dev/fdx.
+		3. punto de motaje: sitio en el arbol de directorios donde queremos montar 
+			el sistema de archivos.
+	ejemplos:
+		montaje de un disket
+			mount -t vfat /dev/fd0 /mnt/floppy
+		montaje de un cdrom
+			mount -t iso9660 /dev/scd0 /mnt/cdrom
+		montaje de un disco rigido de red
+			mount -t nfs remote_host:/dir [optons] mount_point
+		Montaje de memoria usb
+			mount /dev/sdc1 /mnt/usb0
+			
+umount punto_de_montaje -> desmonta sistema de archivos
+umount nombre_de_dispositivo -> demsonta dispositivo

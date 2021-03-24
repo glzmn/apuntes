@@ -1,0 +1,21 @@
+$fdisk -l muestra dispositivos conectados
+
+$cat /etc/mtab ->mustra dispositivos montados actualmente en el sistema
+		y la hubicacion donde fueron montados
+
+$/etc/fstab -> dispositivos que se montan en el arranque
+
+$df -h -> tamaño de dispositivos montados
+
+$ls -l /dev/disk/by-uuid -> ver el uuid de los dispositivos
+
+$blkid /dev/sda1 -> ver el uuid de /dev/sda1
+
+
+$file -s /dev/sda1 -> muestra tipo de formato de disco
+
+
+$arted /dev/sda 'print' -> muster particiones de disco con mucha informaci—n de particiones y dispositivo
+
+
+grep -rnw '/path/to/somewhere/' -e 'pattern' -> busca recursive de un texto en varios archivos

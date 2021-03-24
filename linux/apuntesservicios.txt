@@ -1,0 +1,137 @@
+/etc/init.d/
+------------
+Dentro de esta carpeta se encuntran una serie de scripts que permiten inicar/detener la gran mayoría de los servicios/servidores que estén instalados en el equipo. Estos scripts están programados de tal manera que la mayoría reconoce los siguientes argumentos:
+start
+stop
+restart
+status
+
+Iniciando servicios desde el arranque del sistema
+-------------------------------------------------
+Es posible configurar los servicios a ejecutar en base a niveles de ejecucción (run levels), cada nivel de ejecucción (en la mayoría de las distros son 7), inicia o detiene (Start o Kill) ciertos servicios. 
+Estos niveles son los siguientes:
+0 Detener o apagar el sistema
+1 Modo monousuario, generalmente utilizado para mantenimiento del sistema
+2 Modo multiusuario, pero sin soporte de red
+3 Modo multiusuario completo, con servicios de red
+4 No se usa, puede usarse para un inicio personalizado
+5 Modo multiusuario completo con inicio gráfico ( X Window)
+6 Modo de reinicio (reset)
+
+
+por default del sistema esta definifo en /etc/inittab, en la línea initdefault:
+$grep initdefault /etc/inittab
+
+who -r -> run level actual del sistema
+
+init n -> cambia run level actual por n
+
+Los directorios rc
+---------------------
+Debajo de /etc se encuentra el directorio rc.d que a la vez contiene un directorio para cada nivel de ejecucción
+cada uno de estos directorios contiene scripts (o mas bien enlaces a scripts) que apuntan al directorio init.d, entonces el comando init (ya sea ejecutado manualmente o cuando se inicia el sistema), dependiendo del nivel indicado leera cada uno de los enlaces o accesos directos del directorio respectivo.
+todos los enlaces comienzan con K (kill) o con S (start), es pues fácil deducir que los que comienzan con K son scripts que recibirán el argumento stop y los que comienzan con S el de start, es decir, se inician. Esta gran simplicidad ofrece una enorme potencia al momento de configurar servicios ya que basta con agregar o quitar enlaces con el formato indicado para personalizar los niveles de ejecucción a nuestro gusto.
+Después de la K o S sigue un número consecutivo, seguido generalmente del nombre del servicio que afectan, el número secuencial es simplemente el orden en que se leeran los scripts, primero los K comenzando con el 01 y hacía adelante y después los S. Entonces si por ejemplo no queremos que se inicie el samba en el nivel 3 bastaría con borrar su enlace en este directorio:
+#> pwd
+/etc/rc.d/rc3.d
+#> rm S54smb
+Y listo, el servidor samba ya no arrancaría cuando entremos en este nivel de ejecucción. Si por lo contrario lo que deseamos es iniciar (o apagar) un servicio, basta con crear su enlace en el directorio respectivo:
+#> pwd
+/etc/rc.d/rc5.d
+#> ln -s /etc/rc.d/init.d/mysql S90mysql
+#> ls -l S90mysql
+lrwxrwxrwx   1 root root    9 Oct 20 18:23 S90mysql -> ../init.d/mysql
+Con esto la siguiente vez que iniciemos el equipo o cambiemos a nivel 5 con init, también se iniciará el servidor de la base de datos MySQL. El número 90 es escogido al azar entre 01 y 99 es simplemente el orden en que serán iniciados o detenidos los servicios.
+
+Comando chkconfig
+--------------------
+permite configurar que servicios arrancan/detienen en cada nivel de ejecucción.
+
+chkconfig no inicia ni detiene servicios al momento (excepto aquellos bajo xinetd), tan solo crea o elimina precisamente los enlaces de los que se habló en el punto anterior de una manera mas amigable.
+
+
+chkconfig --list -> nos da una lista completa de todos los servicios instalados y para cada nivel si arrancará (on) al entrar a ese nivel o se detendrá (off) o simplemente no se iniciara. 
+
+
+chkconfig servicio -> muestra status de servicio
+
+chkconfig -> nos dará una lista con el status de todos los servicios
+
+Se desea que el servidor web apache (httpd) inicie cuando se entra en el nivel 5, entonces usamos la opción --level:
+#> chkconfig --level 5 httpd on
+La base de datos MySQL no se desea que inicie en los niveles 3 y 5, solo hasta que el administrador decida arrancarla:
+#> chkconfig --level 35 mysql off
+
+--------------------------------------------------------------------------------
+
+Para ver los servicios que ofrece nuestra máquina se puede usar el comando netstat.
+% netstat -atu | grep '*:*' | more
+
+Los servicios más comunes suelen tener asociado un nombre, que aparece en la columna etiquetada como "Local Address". En el caso de que el servicio no tenga asociado un nombre, en esta columna aparecerá el número de puerto en el que el servidor se encuentra a la escucha. En este ejemplo aparece un servicio en el puerto 6000, que corresponde al servidor de X.
+
+Cómo eliminar estos servicios:
+-----------------------------
+entra como root
+busca todos los ficheros de nombre /etc/rc.d/rc*.d/S*XXX, donde XXX es:
+nfsfs, nfs NFS
+smb Samba
+httpd Web
+innd News
+sendmail SMTP
+el nombre del servicio; por ejemplo:
+% ls /etc/rc.d/rc*.d/S*nfs
+renombra cada uno de los ficheros anteriores, poniendo un punto (".") delante del nombre; por ejemplo:
+% mv /etc/rc.d/rc3.d/S50nfs /etc/rc.d/rc3.d/.S50nfs
+Los cambios tendrán efecto a partir del siguiente rebotado de la máquina. Si quieres pararlos de forma inmediata, puedes hacer:
+% /etc/rc.d/init.d/XXX stop
+donde XXX es el nombre del servicio.
+
+
+
+Servicios de arranque bajo demanda
+----------------------------------------
+
+Los servicios de arranque bajo demanda aparecen listados en el fichero /etc/inetd.conf (en las nuevas versiones de Linux estos servicios son administrados por el nuevo demonio xinetd). La primera columna del fichero indica el nombre del servicio. Las líneas que comienzan por "#" se consideran comentarios y son ignoradas.
+
+ftp: permite transferir ficheros hacia o desde nuestra estación de trabajo. Recomendamos permitir el acceso por FTP sólo desde un rango limitado de máquinas.
+telnet: permite abrir una sesión remota en nuestra estación. También es recomendable limitar el acceso por máquinas.
+shell (rsh), login (rlogin): es preferible quitarlos, siempre que sea posible, puesto que permiten entrar en la máquina o ejecutar comandos de forma remota sin necesidad de dar un password. Si se dejan, limitar siempre el acceso por máquinas. Otra posibilidad es utilizar un sustituto más seguro como el SSH (Secure Shell).
+Gopher: se trata de un servicio de información poco usado en la actualidad; los detalles de su configuración quedan fuera del ámbito de esta guía.
+talk, ntalk: permiten mantener una conversación interactiva con un usuario en la misma máquina o en otra remota.
+pop-2: es una versión antigua del protocolo POP; se puede quitar.
+pop-3: es el servidor del protocolo de correo POP3; si dispones de un a cuenta POP y simplemente quieres leer tu correo, este servicio NO hace falta para nada.
+imap: otro protocolo de correo, similar al POP; tampoco hace falta en una estación de trabajo.
+finger: puesto que puede dar información útil para un atacante (por ejemplo, si hay alguien conectado que pueda darse cuenta de una entrada anómala), la mayoría de los administradores suelen quitarlo.
+time: sirve para sincronizar el reloj entre un grupo de máquinas; lo mejor es quitarlo.
+auth: mantiene un registro de qué usuario está ejecutando qué servicio TCP. Puede ser útil para el administrador.
+Cómo eliminar estos servicios:
+
+entra como root
+guarda una copia de /etc/inetd.conf antes de quitar nada!!!
+en el fichero /etc/inetd.conf, por cada servicio que queramos quitar, insertar un "#" al principio de la línea
+refresca inetd:
+# /etc/rc.d/init.d/inet restart
+
+
+
+
+
+
+----------------------------------------------------------
+El comando siguiente ejecutado desde la consola, determina cuáles puertos están escuchando por conexiones TCP desde la red:
+nmap -sT -O localhost
+
+consultar la pila de la red para ver servicios escuchando:
+netstat -an o lsof -i
+
+ver servicios que ofrece nuestra maquina
+netstat -atu | grep '*:*' | more 
+
+Para verificar si Puerto está asociado con la lista oficial de servicios conocidos:
+cat /etc/services | grep Puerto
+
+verificar por información sobre Puerto usando netstat o lsof
+netstat -anp | grep Puerto
+
+lsof revela información similar puesto que es capaz de enlazar puertos abiertos a servicios:
+lsof -i | grep Puerto

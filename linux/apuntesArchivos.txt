@@ -1,0 +1,181 @@
+Todo en linux es tratado como archivo.
+Hay 5 tipos de archivos:
+	1. sencillos u ordinarios
+	2. directorios
+	3. vinculos simbólicos (se software)
+	4. archivos especiales (dispositivos)
+	5. tubos con nombre (FIFO)
+
+1. arvhivos ordinarios
+	-se emplean para almacenar información y datos en dispositivos de 
+	almacenamiento secundarios como los son los discos rigidos.
+	-puden contener programas ejcutables, codigo fuente, musica, video, graficos, etc
+	-Linux trata a todos estos archivos de igual manera, como una sucesion de bytes
+	las aplicaciones con las que se usan estos archivos son las que asocian un
+	significado al contenido del archivo.
+	-Los nombres pueden tener hasta 255 caracteres, cualquier tipo de caracter es 
+	valido, pero es recomendable usar caracteres imprimibles y que no sean
+	metacaracteres de las shell
+	-pueden tener cualquier extension, para linux las extensiones no significan nada
+
+2. directorios
+	-la estructura es | nº inodo | nombre archivo |
+	el nº de inodo tiene 4 bytes
+
+3. Archivos de vinculos	
+	se usan para archivos compartidos
+
+4. Archivos especiales
+	-son un medio para acceder a un dispositivo de hardward
+	-puden ser de dos tipos:
+		-de caracteres:
+			corresponden a dispositivos orientados a caracteres
+			como el teclado
+		-de bloques:
+			corresponden a dispositivos orientados a bloques
+			como el dico rigido
+
+	-por lo general se almacenan en el directorio /dev
+		/dev contiene como mínimo un archivo por cada dispositivo
+		que este conectado al pc
+	-Las ordenes y aplicaciones leen y escriben en los archivos de dispositivos
+	perifericos al igual que como lo harian en un archivo ordinario.
+	esta capacidad es la razon que hace a linux un S.O. independiente de los
+	dispositivos.
+	-Existen varios dispositivos especiales que simulan ser dispositivos fisicos
+	llamados pseudodispositivos.
+	Los pseudodispositivos permiten interactuar con el sistema linux sin emplear
+	los dispòsitivos que estan conectados al sistema y permiten interactuar con
+	un sistema linux a travez de una red, un modem o mediante terminales virtuales
+	en un sisytema de ventanas como XWindows.
+	-Ejemplos de dispositivos
+	fd0 ->disco flexible
+	hda -> disco rigido
+	lp0 -> impresora
+	tty -> terminal de teletipo
+
+5. tubos con nombre (FIFO)
+	Linux posee varios mecanismos para la comunicacion entre procesos denominados
+	IPC (mecanismo de comunicacion entre procesos), los mas comuness son:
+		-Tubos
+			zona de memoria del kernel (bufer) que permite a dos procesos
+			comunicarse entre si, siempre que los dos procesos esten
+			ejecutandose en el mismo momento en el mismo computador y
+			esten relaciondos entre si (padre-hijo)
+		-Tubos con nombre (FIFO)
+			Archivo que permite a dos procesos de un mismo computador
+			comunicarse entre si aunque no esten relacionados entre si
+		-sockets
+			Estructura de datos que reside en la memoria del kernel que
+			permite la comunicacion de procesos residentes en computadores
+			diferentes
+
+Directorios estandars
+	/ (directorio raíz)
+	/bin (binarios)
+		contiene imágenes binarias (ejecutables) de la mayoría de las ordenes de
+		Linux para usuarios y administradores del sistema.
+		Todos los archivos son ejecutables o vinculos simbólicos a archivos
+		ajecutables que se encuentran en algun otro directorio.
+		/usr/bin contiene la mayoria de las ordenes del usuario.
+	/boot
+		Contiene todos los archivos necesarios para el arranque del sistema,
+		incluyendo la imágen binaria del kernel.
+		El nombre de archivo del kernel es vmlinix o vmlinuz seguido por
+		la informacion de vercion y de edicion.
+	/dev
+		contiene los archivos que corresponden a los dispositivos que estan
+		conectados al PC.
+	/etc
+		contiene archivos y directorios espesificos del computador, como los
+		son los archivos de configuracion del sistema.
+	/home
+		contiene los directorios iniciales de los usuarios.
+	/lib
+	 	contiene una coleccion de archivos de imagenes objeto correspondientes
+		a un lenguaje dado, como bibliotecas para c, c++, FORTRAN, etc.
+		Las imagenes de biblioteca de este directorio son necesarias para que
+		arranque el sistema y para ejecutar cietrtas ordenes.
+	/lost+found
+		contiene todos los archivos el sistema que no estan asocidos a nungun
+		directorio.
+	/mnt
+		Es utilizado para montar temporalmente sistemas de archivos empleando
+		la orden mount.
+		Contiene los puntos de montaje de CD-ROM, del dico y del disco flexible
+		Por ejempolo cuadno se monta un CD-ROM se puede accder a su contenido
+		como si fueran archivos del directorio /mnt/cdrom
+	/opt
+		sirve para instalar paquetes de software adicionales.
+	/proc
+		contiene informacion relativa a los procesos y al sistema
+	/root
+		directorio inicial del usuario root
+	/sbin
+		los directorios /sbin /usr/sbin y /usr/local/sbin contienen herramientas
+		de administracion del sistema, utilidades y ordenes generales de
+		aplicacion exclusivas de root
+	/tmp
+		contiene archivos temporales de varios archivos y aplicaciones.
+		Todos los archivos de este directorio se eliminaran de manera periodica
+		para que el disco no se llene de archivos temporales.
+	/usr
+		contiene datos no modificables que se pueden compratir entre diferentes
+		computadores
+	/var
+		contiene los datos variables del sistema.
+	/etc/passwd
+		contiene una linea por usuario del sistema. 
+		Cada linea posee 7 campos separados mediante el caracter :
+		nombre_conexion:contraseña_encriptada:id_usuario:id_grupo:infor_usuario:
+		directorio_inicial:shell_conexion
+		nombre de conexion:
+			nombre por el cual el sistema conoce al usuario
+		contraseña_encriptada o false
+			si hay contraseña false, la verdadera esta en /etc/shadow
+		id_usuario
+			entero entre 0 y 65535 que se le asigna al usuario
+			0 es root
+			del 1 al 99 estan reservados
+		id_grupo
+			entero entre 0 y 65535 que identifica a cada grupo de usuarios
+			del sistema. del 0 al 99 estan reservados
+		info_usuario
+			informacion relativa al usuario como puede ser su nombre completo
+		si se ponen dos veces seguidas el caracter dos puntos es porque falta
+		la informacion que iria entre esos dos dos puntos.
+
+Archivo /etc/fstab
+------------------
+proporciona al sistema opciones y puntos de montaje predeterminados para que los sistemas de archivos se puedan montar automaticamente o montarlos manualmente.
+Solo un superusuario puede escribir en este archivo.
+Los comandos fsck, mount y umont leen la informacion de este archivo.
+Cada sistema de archivos tiene su linea de informacion seprada por tabulaciones.
+Primer campo:
+	indica el dispositivo de bloque o sistema de archivos remoto a montar
+Segundo campo:
+	identifica el punto de montaje en el sistema local donde se va a montar el sistema
+	de archivos
+Tercer campo:
+	tipo de sistema de rchivos
+Cuarto campo:
+	lista de opciones mount delimitada por comas:
+		-exec: si se especifica esta opcion se pueden ejecutar binarios desde
+			este sistema de archivos
+		-noauto: no se montara en el arranque
+		-noexec: no se ejecutan binarios desde este sistema de archivos
+		-nosuid: no permite que surtan efecto los bitsde identificador del 
+			usuario establecido o del identificador de grupo establecido
+		-ro: monta el sistema de archivos de solo lectura
+		-rw: montya el sistema de archivos como lectura y escritura
+		-sync: la lectura y escritura de archivos se reraliza sincronicamente
+		-user: permite a un usuario que no sea root montar un sistema de archivos
+			con (de forma predeterminada) las opciones noexec, nosuid, nodev.
+		-unhide: mustra los archivos ocultos y asociados
+Quinto campo:
+	lo utiliza dump (programa de copia de seguridad) para determinar si se debe hacer
+	buckup de este sistema de archivos. 1 es si y 0 es no.
+Sexto campo:
+	lo utuliza fsck para determinar como tiene que interactuar con el sistema de 
+	archivos. 0 es que fsck nunca se se ejecutara en el sistema de archivos. 1 que se
+	ejecutara en un tiempo predeterminado y 2 que no se ejecutara tan seguido.

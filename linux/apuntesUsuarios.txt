@@ -1,0 +1,223 @@
+﻿Todos los usuarios tienen cuentas en el sistema cuyos datos stan en /etc/passwd
+	ver mas sobre /etc/passwd en apuntesPermisos.txt
+
+En principio hay tres tipos de usuarios:
+----------------------------------------	
+	1. root
+	2. usuario normal
+	3. usuario del sistema
+
+		1. Es el superusuario. Aunque en un sistema pueda haber muchos administrador
+		es, solo existe un único usuario root que tiene todos los privilegios del 
+		sistema y cuyo ID de usuario y ID de grupo es 0.
+		root puede utilizar cualquier programa, manipular cualquier archivo,
+		desplazarse a cualquier parte del sistema y hacer lo que quiera dentro del
+		sistema.
+		
+		2. El usuario normal es una persona que se registra y utiliza la PC para 
+		realizar tareas no administrativas. Si bien no es administrador, puede tener
+		permiso para administrar sus propios archivos y configuraciones personales.
+		
+		3. El usaurio del sistema no es una persona, sino un porceso que se ejecuta
+		en la PC.
+		Este usuario requiere la propiedad de archivos y procesos para poder 
+		realizar su tarea de manera segura. Estos usuarios no poseen dirctorio 
+		local ni contraseña y no puden iniciar secion.
+
+ID de usuario e ID de grupo:
+----------------------------
+ID usuario = UID
+ID grupo = GID
+Los nombres de usuario y grupo son para que las personas podamos manejarnos mejor
+La computadora ve a los usuarios y grupos solo por su numero de ID.
+root tiene UID y GID igual a 0.
+Los ID comprendidos entre el 1 y el 499 y el 65534 son los usuarios del sistema o logicos
+Los usuarios normales tienen un UID que comienza desde el 500, son asignados secuencialmente
+Fedora asigna un GID para cada UID igual o superior a 500. 
+El administrador del sistema puede agregar usuarios a un grupo o crear grupos nuevos y 
+asignarles suarios al mismo.
+Al contrario que en windows NT, en linix un grupo no puede ser miembro de otro grupo.
+
+Gestion de grupos:
+------------------
+Los grupos establecen relaciones entre usuarios que comparten un conjunto comun de permisos
+Si dos usuarios se encuentran en el mismo grupo pueden leer y escribir en archivos que
+pertenecen al grupo y al mismo tiempo conservar la privacidad y seguridad de sus peropios
+archivos.
+Por ejemplo se puede crear un grupo que no pueda usuar los puertos usb. ver permisos.txt
+Fedora utiliza un esquema denominado UPG (User private Group o grupo privado de usuario) 
+donde , de manera predeterminada, cada usuario al darse de alta en el sistema se asigna
+a un grupo con su propio nombre.
+Todos los grupos aparecen en el archivo /etc/group
+Comandos:
+	groupadd -> crea y añade un nuevo grupo
+	groupdel -> elimina grupo existenete
+	groupmod -> crea un nombre de grupo o GID para un grupo existente,
+		    pero no añade ni elimina miembros de grupo.
+	gpasswd -> establece una contraseña de grupo. cada grupo puede tener una contraseña
+		   y un administrador.
+		-A -> asigan a un usuario como administrador de grupo.
+	useradd -G -> añade un usuario a un grupo en el momento de la creacion del usuario
+	usermod -G -> añade un usuario existente a un grupo existente,
+		      siempre que el usuario no haya iniciado sesion en este mosmento.
+	gepck -> sirve para comprovar si existen errores tipograficos en /etc/group
+
+	Ej: que un usuario normal pueda acceder al cd-rom:
+		groupadd cdrw
+		chgrp cdrw /dev/scd0
+		usermod -G cdrw ale
+		gpasswd -A ale
+		-Ahora ale puede acceder al cdrom y como es el administrador tambien 
+		pude dar de alta a usuarios para que tambien lo usen.
+Gestion de usuarios:
+--------------------
+-se deben craer usuarios.
+-se les debe asignar un UIG.
+-se les debe proporcionar un directorio local.
+-se les debe proporcional un conjunto inicial de archivos para su directorio local.
+	los arhivos predeterminados para un usuario se encuentra en /etc/skel
+-se les debe asignar a un grupo para que puedan utilizar los recursos del sistema.
+-tambien se les puede asignar una cuota de disco.
+	comndos:
+	--------
+	useradd -> crea usuario. sus parametros permiten especificar directorio local,
+		   grupo inicial o crear el usuario con opciones predeterminadas.
+		-G -> establece las opciones predeterminadas del sistema para la 
+		      creacion del directorio local del usuario, la fecha de vencimiento
+		      de la cuenta, el grupo predeterminado, y el indicador de comandos.
+		      Si se utiliza sin nungun argumento presenta las configuraciones
+		      predeterminadas del sistema.
+		-p clave -> le asigna al nuevo usuario la contraseña clave
+		-s /bin/bash -> le asigna al nuevo usuario la shell bash
+		-u 549 -> le asigna al nuevo usuario el UID 549
+		-c comentario -> comentario sobre usuario
+		-d directorio -> directorio home que tendra el usuario. no crea.
+		-m directorio -> asigna y crea home que tendra el usuario
+		-e YYYY-MM-DD -> dia de expiracion de cuenta del usuario
+		-g grupo -> grupo puede ser nombre o GID, es el grupo al que pertrenecera
+		-K umask=622 -> mascara de permisos del usuario 622
+
+
+	userdel -> elimina completamente la cuenta de un usuario y su directorio local con
+		   todos los archivos que contenga.
+	passwd -> actueliza los indicadores de validacion utilizados por el sistema de
+	          gestion de contraseñas
+	usermod -> modifica cuenta del usuario mientras el usuario no haya iniciado sesion
+	           o este ejecutando algun proceso.
+		-s -> cambia la shell del usuario
+		-u -> cambia el UID
+	chsh -> cambia la shell predeterminada del usuario.
+	w -> indica a root quien inicio sesion, desde donde y que esta haciendo.
+	w usuario -> muestra a root solo la actividad del usuario usuario
+	ac ale -> muestra a root en horas el tiempo que lleva conectado el usuario ale
+		  saca la info del archivo /var/log/wtmp.
+		  si se produce "distorcion de tiempo" en el que una ntrada en los archivos
+		  wtmp puede volver atras en el pasado y ac mostrar cantidades inusuales de 
+		  tiempo para los usuarios. Puede ser el reloj del sistema o una brecha
+		  de seguridad.
+	last ->busca en el archivo /var/log/wtmp y muestra una lista de todos los usuarios
+		que han iniciado sesion y han salido de ella desde que se creo por 
+		primera vez el archivo.
+	lastb -> muestra todos los intentos de inicio de sesion fallidos
+	reboot -> muestra quien se ha registrado desde el ultimo inicio de sesion
+	cgfn -> cambia el campo gecos de un usuario en el archivo /etc/passwd
+	su usuario -> pasamos ser usuario pero seguimos con nuestras variables de entorno
+	su - ->pasamos a ser root con las variables de entorno de root
+	sudo -> sirve para ejecutar un comando como root. su se pone sudo comando el
+		sistema revisa el archivo /etc/sudoers para comporbar si el usuario que
+		invoco a sudo tiene permisos para ejecutar ese comando en concreto.
+		Para modificar el archivo etc/sudoers se usa un editor especial que
+		compruba errores sintactico y bloquea el archivo para que no pueda estar 
+		modificandose al mismo tiempo por otra sesion. -> visudo
+	sudo -l -> muestra a los usuarios con una lista de los comandos que pueden usar.
+	bash -l -> shell restringida, se le pone esta shell a un usuario que se quiere
+		   restringir. no puede ejecutar ni ls -l, ni cd, etc...
+
+	truco: bloquear cuenta de un usuario
+		passwd -l nombre-usuario -> anexa un simbolo ! a la contraseña cifrada del 
+					    usuario.
+		passwd -u nombre-usuario -> desbloquea cuenta bloqueada con el comando
+					    anterior.
+	
+	Archivo /etc/passwd:
+	--------------------
+	-Es el archivo de base de datos para todos los usuarios.
+	-El formato es:
+		nombreUsuario:contraseña:uid:gid:gecos:homedir:shell
+		El campo gecos incluye informacion diversa del usuario:
+			-su nombre completo
+			-su direccion
+			-telefono
+			-breve mensaje de texto
+		Este campo se utiliza poco por razones de seguridad.
+		gecos es utilizado por algubos programas como finger y mail.
+		Los detos de este campo van separados por coma.
+		Estos datos se pueden cambiar con el comando cgfn
+	-Los dos puntos separan los campos del archivo, sin un dato no esta disponible
+	apareceran dos dos puntos seguidos.
+	-Si aparece * en el campo contraseña dicho usuario no podra iniciar sesion
+	tambien se puede hacer esto con el comando passwd -l nombreUsuario
+	-Si aparece una x en el campo contraseña es que la contraseña esta oculta.
+	dichas contraseñas se encuentran sifradas en el archivo /etc/shadow ya que este
+	archivo solo puede leerlo root mientras que /etc/passwd pueden leerlo otros usuarios
+	-La shell /sbin/nologin no es una shell sino que se pone para los servicios del
+	sistem que se ejecutan como pseudio usuarios, o usuarios del sistema.
+	/sbin/nologin porhibe cualquier inicio de sesion por parte de estos usuarios.
+
+	Archivo /etc/shadow:
+	--------------------
+	-Los permisos de este archivo deben ser 600
+	-Contiene las contraeñas sifradas.
+	Este archivo solo puede leerlo, modificarlo o ejecutarlo root o (PAM).
+	-Los campos separados por : de este archivo son:
+		-nombre de usuario
+		-contraseña cifrada del usuario
+		-nº de dias transcurridos desde el 1 de enero de 1970 cuando se cambio
+		por última vez la contraseña.
+		-nº de dias antes d que se pueda volver a cambiar la contraseña
+		(evita por seguridad que se cambie la contraseña y luego se vuelva 
+		a la vieja)
+		-nº de dias que deben transcurrir para cambiar obligatoriamente la 
+		contraseña 
+		-nº de dias que deben transcurrir para avisar al usuario de que va a 
+		caducar la contraseña
+		-nº de dias que deben transcurrir para que caduque la contraseña cuando 
+		se deshabilite la cuenta.
+		-nº de dias trasncurridos desde el 1 de enero de 1970 desde que se 
+		deshabilito la cuenta.
+		-campo final que actualmente no tiene asiganado ningun uso
+
+		La fecha 1 de enero de 1970 se conoce como "epoca".
+
+	PAM (Pluggable Authentification Modules):
+	-----------------------------------------
+	-Sistema que controla las tareas de validacion de la PC.
+	-Utiliza 4 grupos de gestion:
+		-gestion de cuentas
+		-gestion de validacion
+		-gestion de contraseñas
+		-gestion de sesiones
+	-permite a root elegir como las aplicaciones individuales van a validar a los
+	usuarios
+	-los archivos se encuentran en /etc/pam.d
+	Dichos archivos se denominan para el servicio que controlan y el formato es:
+		tipo control ruta_de_acceso_modulo argumentos_modulo
+		tipo -> es el grupo de administracion al que se corresponde la regla
+		control -> indica a PAM lo que tiene que hacer si falla la validacion
+		Los dos finales tratan con el modulo PAM utilizado y cualquier
+		argumento que necesite.
+		mas en pag 324 de la biblia d fedora 3
+	
+	Gestion de contraseñas:
+	-----------------------
+		/etc/shadow se setea cada cuanto se debe cambiar la contraseña
+		
+	Cuotas de disco:
+	----------------
+		euotacheck
+		edquota
+		setquota
+		quotaon
+		quotaoff
+		warnquota
+		pag 334 de la biblia

