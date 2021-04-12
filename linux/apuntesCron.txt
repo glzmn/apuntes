@@ -1,6 +1,4 @@
 
-como no me avisaron que era imposible lo logre
-
 /var/spool/cron/crontabs/nombreUsuario -> tareas cron de cada usuario
 
 crontab -l -> muestra tabla de tareas programadas de cron
@@ -13,7 +11,7 @@ crontab -e -> abre vi con las tablas de cron para agregar, editar o eliminar tar
 
 
 #listar archivos en /tmp de mas de tres dias de utilizacion
-#se ejecuta todos los dias a la 1 de la maÒana
+#se ejecuta todos los dias a la 1 de la ma√±ana
 0 1 * * * find /tmp -atime 3 -exec ls -l { } /;
 0 22 * * * root /usr/respaldodiario.sh
 0 23 * * 5 root /usr/respaldosemanal.sh
@@ -28,14 +26,14 @@ Hay al menos dos maneras distintas de usar cron:
 ------------------------------------------------
 La primera
 ----------
-En el directorio etc, donde muy seguramente encontrar·s los siguientes directorios:
+En el directorio etc, donde muy seguramente encontrar√°s los siguientes directorios:
 cron.hourly
 cron.daily
 cron.weekly
 cron.monthly
 
 
-Si se coloca un archivo tipo script en cualquiera de estos directorios, entonces el script se ejecutar· cada hora, cada dÌa, cada semana o cada mes, dependiendo del directorio.
+Si se coloca un archivo tipo script en cualquiera de estos directorios, entonces el script se ejecutar√° cada hora, cada d√≠a, cada semana o cada mes, dependiendo del directorio.
 Para que el archivo pueda ser ejecutado tiene que ser algo similar a lo siguiente:
 
 
@@ -46,23 +44,23 @@ tar czf * respaldo
 cp respaldo /otra_directorio/.
 
 
-NÛtese que la primera lÌnea empieza con #!, que indica que se trata de un script shell de bash, las dem·s lÌneas son los comandos que deseamos ejecute el script. Este script podrÌa nombrarse por ejemplo respaldo.sh y tambiÈn debemos cambiarle los permisos correspondientes para que pueda ser ejecutado, por ejemplo:
+N√≥tese que la primera l√≠nea empieza con #!, que indica que se trata de un script shell de bash, las dem√°s l√≠neas son los comandos que deseamos ejecute el script. Este script podr√≠a nombrarse por ejemplo respaldo.sh y tambi√©n debemos cambiarle los permisos correspondientes para que pueda ser ejecutado, por ejemplo:
 
 #> chmod 700 respaldo.sh
 #> ls -l respaldo.sh
 -rwx------ 1 root root 0 Jul  20 09:30 respaldo.sh
 
 La "x" en el grupo de permisos del propietario (rwx) indica que puede ser ejecutado.
-Si este script lo dejamos en cron.hourly, entonces se ejecutar· cada hora con un minuto de todos los dÌas, en un momento se entender· el porque.
+Si este script lo dejamos en cron.hourly, entonces se ejecutar√° cada hora con un minuto de todos los d√≠as, en un momento se entender√° el porque.
 
 
 
 
 Segundo modo
 ------------
-Ejecutar o usar cron es a travÈs de manipular directamente el archivo /etc/crontab.
-En la instalaciÛn por defecto de varias distribuciones 
-Linux, este archivo se ver· a algo como lo siguiente:
+Ejecutar o usar cron es a trav√©s de manipular directamente el archivo /etc/crontab.
+En la instalaci√≥n por defecto de varias distribuciones 
+Linux, este archivo se ver√° a algo como lo siguiente:
 
 
 #> cat /etc/crontab
@@ -77,70 +75,70 @@ HOME=/
 22 4 * * 0 root run-parts /etc/cron.weekly
 42 4 1 * * root run-parts /etc/cron.monthly
 
-Las primeras cuatro lÌneas son variables que indican lo siguiente:
-SHELL es el 'shell' bajo el cual se ejecuta el cron. Si no se especifica, se tomar· por defecto el indicado en la lÌnea /etc/passwd correspondiente al usuario que este ejecutando cron.
-PATH contiene o indica la ruta a los directorios en los cuales cron buscar· el comando a ejecutar. Este path es distinto al path global del sistema o del usuario.
+Las primeras cuatro l√≠neas son variables que indican lo siguiente:
+SHELL es el 'shell' bajo el cual se ejecuta el cron. Si no se especifica, se tomar√° por defecto el indicado en la l√≠nea /etc/passwd correspondiente al usuario que este ejecutando cron.
+PATH contiene o indica la ruta a los directorios en los cuales cron buscar√° el comando a ejecutar. Este path es distinto al path global del sistema o del usuario.
 
-MAIL TO es a quien se le envÌa la salida del comando (si es que este tiene alguna salida). Cron enviar· un correo a quien se especifique en este variable, es decir, debe ser un usuario v·lido del sistema o de alg˙n otro sistema. Si no se especifica, entonces cron enviar· el correo al usuario propietario del comando que se ejecuta.
-HOME es el directorio raÌz o principal del comando cron, si no se indica entonces, la raÌz ser· la que se indique en el archivo /etc/passwd correspondiente al usuario que ejecuta cron.
-Los comentarios se indican con # al inicio de la lÌnea.
+MAIL TO es a quien se le env√≠a la salida del comando (si es que este tiene alguna salida). Cron enviar√° un correo a quien se especifique en este variable, es decir, debe ser un usuario v√°lido del sistema o de alg√∫n otro sistema. Si no se especifica, entonces cron enviar√° el correo al usuario propietario del comando que se ejecuta.
+HOME es el directorio ra√≠z o principal del comando cron, si no se indica entonces, la ra√≠z ser√° la que se indique en el archivo /etc/passwd correspondiente al usuario que ejecuta cron.
+Los comentarios se indican con # al inicio de la l√≠nea.
 
 
-DespuÈs de lo anterior vienen las lÌneas que ejecutan las tareas programadas propiamente. No hay lÌmites de cuantas tareas pueda haber, una por renglÛn. Los campos (son 7) que forman estas lÌneas est·n formados de la siguiente manera:
+Despu√©s de lo anterior vienen las l√≠neas que ejecutan las tareas programadas propiamente. No hay l√≠mites de cuantas tareas pueda haber, una por rengl√≥n. Los campos (son 7) que forman estas l√≠neas est√°n formados de la siguiente manera:
 
 
 Minuto  Hora  DiaDelMes  Mes  DiaDeLaSemana  Usuario  Comando
 
 
-01	* * * *	Se ejecuta al minuto 1 de cada hora de todos los dÌas
-15	8 * * *	 A las 8:15 a.m. de cada dÌa
-15 20 * * *	A las 8:15 p.m. de cada dÌa
+01	* * * *	Se ejecuta al minuto 1 de cada hora de todos los d√≠as
+15	8 * * *	 A las 8:15 a.m. de cada d√≠a
+15 20 * * *	A las 8:15 p.m. de cada d√≠a
 00 5 * * 0	A las 5 a.m. todos los domingos
 * 5 * * Sun	Cada minuto de 5:00a.m. a 5:59a.m. todos los domingos
 45 19 1 * *	A las 7:45 p.m. del primero de cada mes
 01 * 20 7 *	Al minuto 1 de cada hora del 20 de julio
 10 1 * 12 1	A la 1:10 a.m. todos los lunes de diciembre
-00 12 16 * Wen	Al mediodÌa de los dÌas 16 de cada mes y que sea MiÈrcoles
+00 12 16 * Wen	Al mediod√≠a de los d√≠as 16 de cada mes y que sea Mi√©rcoles
 30 9 20 7 4	A las 9:30 a.m. del dia 20 de julio y que sea jueves
-30 9 20 7 *	A las 9:30 a.m. del dia 20 de julio sin importar el dÌa de la semana
-20 * * * 6	Al minuto 20 de cada hora de los s·bados
-20 * * 1 6	Al minuto 20 de cada hora de los s·bados de enero
+30 9 20 7 *	A las 9:30 a.m. del dia 20 de julio sin importar el d√≠a de la semana
+20 * * * 6	Al minuto 20 de cada hora de los s√°bados
+20 * * 1 6	Al minuto 20 de cada hora de los s√°bados de enero
 
 
 
-TambiÈn es posible especificar listas en los campos. Las listas pueden estar en la forma de 1,2,3,4 o en la forma de 1-4 que serÌa lo mismo. Cron, de igual manera soporta incrementos en las listas, que se indican de la siguiente manera:
+Tambi√©n es posible especificar listas en los campos. Las listas pueden estar en la forma de 1,2,3,4 o en la forma de 1-4 que ser√≠a lo mismo. Cron, de igual manera soporta incrementos en las listas, que se indican de la siguiente manera:
 
 
 59 11 * 1-3 1,2,3,4,5	A las 11:59 a.m. de lunes a viernes, de enero a marzo
-45 * 10-25 * 6-7	Al minuto 45 de todas las horas de los dÌas 10 al 25 de todos los meses y que el dÌa sea s·bado o domingo
-10,30,50 * * * 1,3,5	En el minuto 10, 30 y 50 de todas las horas de los dÌas lunes, miÈrcoles y viernes
+45 * 10-25 * 6-7	Al minuto 45 de todas las horas de los d√≠as 10 al 25 de todos los meses y que el d√≠a sea s√°bado o domingo
+10,30,50 * * * 1,3,5	En el minuto 10, 30 y 50 de todas las horas de los d√≠as lunes, mi√©rcoles y viernes
 */15 10-14 * * *	Cada quince minutos de las 10:00a.m. a las 2:00p.m.
-* 12 1-10/2 2,8 *	Todos los minutos de las 12 del dÌa, en los dÌas 1,3,5,7 y 9 de febrero y agosto. (El incremento en el tercer campo es de 2 y comienza a partir del 1)
-0 */5 1-10,15,20-23 * 3	Cada 5 horas de los dÌas 1 al 10, el dÌa 15 y del dÌa 20 al 23 de cada mes y que el dÌa sea miÈrcoles
-3/3 2/4 2 2 2	Cada 3 minutos empezando por el minuto 3 (3,6,9, etc.) de las horas 2,6,10, etc (cada 4 horas empezando en la hora 2) del dÌa 2 de febrero y que sea martes
+* 12 1-10/2 2,8 *	Todos los minutos de las 12 del d√≠a, en los d√≠as 1,3,5,7 y 9 de febrero y agosto. (El incremento en el tercer campo es de 2 y comienza a partir del 1)
+0 */5 1-10,15,20-23 * 3	Cada 5 horas de los d√≠as 1 al 10, el d√≠a 15 y del d√≠a 20 al 23 de cada mes y que el d√≠a sea mi√©rcoles
+3/3 2/4 2 2 2	Cada 3 minutos empezando por el minuto 3 (3,6,9, etc.) de las horas 2,6,10, etc (cada 4 horas empezando en la hora 2) del d√≠a 2 de febrero y que sea martes
 
 
 
-Como se puede apreciar en el ˙ltimo ejemplo la tarea cron que estuviera asignada a ese renglÛn con esos datos, solo se ejecutarÌa si se cumple con los 5 campos (AND). Es decir, para que la tarea se ejecute tiene que ser un martes 2 de febrero a las 02:03. Siempre es un AND booleano que solo resulta verdadero si los 5 campos son ciertos en el minuto especÌfico.
+Como se puede apreciar en el √∫ltimo ejemplo la tarea cron que estuviera asignada a ese rengl√≥n con esos datos, solo se ejecutar√≠a si se cumple con los 5 campos (AND). Es decir, para que la tarea se ejecute tiene que ser un martes 2 de febrero a las 02:03. Siempre es un AND booleano que solo resulta verdadero si los 5 campos son ciertos en el minuto espec√≠fico.
 
 El programa cron se invoca cada minuto y ejecuta las tareas que sus campos se cumplan en ese preciso minuto.
 
 Siendo root, es posible entonces, modificar directamente crontab:
 #> vi /etc/crontab
 
-/etc/crontab se asume que es el archivo crontab del usuario root, aunque no hay problema que se incluyan otros usuarios, y de ahÌ el sexto campo que indica precisamente quien es el usuario que ejecuta la tarea y es obligatorio en /etc/crontab.
+/etc/crontab se asume que es el archivo crontab del usuario root, aunque no hay problema que se incluyan otros usuarios, y de ah√≠ el sexto campo que indica precisamente quien es el usuario que ejecuta la tarea y es obligatorio en /etc/crontab.
 
 
 Pero cuando los usuarios normales (e incluso root) desean generar su propio archivo de crontab, entonces utilizaremos el comando crontab.
-En el directorio /var/spool/cron (puede variar seg˙n la distribuciÛn), se genera un archivo cron para cada usuario, este archivo aunque es de texto, no debe editarse directamente.
+En el directorio /var/spool/cron (puede variar seg√∫n la distribuci√≥n), se genera un archivo cron para cada usuario, este archivo aunque es de texto, no debe editarse directamente.
 Se tiene entonces, dos situaciones, generar directamente el archivo crontab con el comando:
 $> crontab -e
-Con lo cual se abrira el editor por default (generalemente vi) con el archivo llamado crontab vacio y donde el usuario ingresar· su tabla de tareas y que se guardar· autom·ticamente como /var/spool/cron/usuario.
-El otro caso es que el usuario edite un archivo de texto normal con las entradas de las tareas y como ejemplo lo nombre 'mi_cron', despuÈs el comando $> crontab mi_cron se encargar· de establecerlo como su archivo cron del usuario en /var/spool/cron/usuario:
+Con lo cual se abrira el editor por default (generalemente vi) con el archivo llamado crontab vacio y donde el usuario ingresar√° su tabla de tareas y que se guardar√° autom√°ticamente como /var/spool/cron/usuario.
+El otro caso es que el usuario edite un archivo de texto normal con las entradas de las tareas y como ejemplo lo nombre 'mi_cron', despu√©s el comando $> crontab mi_cron se encargar√° de establecerlo como su archivo cron del usuario en /var/spool/cron/usuario:
 $> vi mi_cron
 # borra archivos de carpeta compartida
 0 20 * * * rm -f /home/sergio/compartidos/*
-# ejecuta un script que realiza un respaldo de la carpeta documentos el primer dÌa de cada mes
+# ejecuta un script que realiza un respaldo de la carpeta documentos el primer d√≠a de cada mes
 0 22 1 * * /home/sergio/respaldomensual.sh
 # cada 5 horas de lun a vie, se asegura que los permisos sean los correctos en mi home
 1 *5 * * * 1-5 chmod -R 640 /home/sergio/*
@@ -150,24 +148,24 @@ mi_cron
 $> crontab mi_cron
 (se establece en /var/spool/cron/usuario)
 Resumiendo lo anterior y considerando otras opciones de crontab:
-$> crontab archivo.cron (establecer· el archivo.cron como el crontab del usuario)
-$> crontab -e           (abrir· el editor preestablecido donde se podr· crear o editar el archivo crontab)   
+$> crontab archivo.cron (establecer√° el archivo.cron como el crontab del usuario)
+$> crontab -e           (abrir√° el editor preestablecido donde se podr√° crear o editar el archivo crontab)   
 $> crontab -l           (lista el crontab actual del usuario, sus tareas de cron)
 $> crontab -r           (elimina el crontab actual del usuario)
 En algunas distribuciones cuando se editan crontabs de usuarios normales es necesario reiniciar el servicio para que se puedan releer los archivos de crontab en /var/spool/cron.
 #> service crond restart
-Para entender mejor como iniciar/detener/reiniciar servicios, en este artÌculo encontrar·s m·s informaciÛn.
+Para entender mejor como iniciar/detener/reiniciar servicios, en este art√≠culo encontrar√°s m√°s informaci√≥n.
 
 
 
 Controlando el acceso a cron
-Cron permite controlar que usuarios pueden o no pueden usar los servicios de cron. Esto se logra de una manera muy sencilla a travÈs de los siguientes archivos:
+Cron permite controlar que usuarios pueden o no pueden usar los servicios de cron. Esto se logra de una manera muy sencilla a trav√©s de los siguientes archivos:
 /etc/cron.allow
 /etc/cron.deny
-Para impedir que un usuario utilice cron o mejor dicho el comando crontab, basta con agregar su nombre de usuario al archivo /etc/cron.deny, para permitirle su uso entonces serÌa agregar su nombre de usuario en /etc/cron.allow, si por alguna razÛn se desea negar el uso de cron a todos los usuarios, entonces se puede escribir la palabra ALL al inicio de cron.deny y con eso bastarÌa.
+Para impedir que un usuario utilice cron o mejor dicho el comando crontab, basta con agregar su nombre de usuario al archivo /etc/cron.deny, para permitirle su uso entonces ser√≠a agregar su nombre de usuario en /etc/cron.allow, si por alguna raz√≥n se desea negar el uso de cron a todos los usuarios, entonces se puede escribir la palabra ALL al inicio de cron.deny y con eso bastar√≠a.
 #> echo ALL >>/etc/cron.deny
 o para agregar un usuario mas a cron.allow
 #> echo juan >>/etc/cron.allow
-Si no existe el archivo cron.allow ni el archivo cron.deny, en teorÌa el uso de cron esta entonces sin restricciones de usuario. Si se aÒaden nombres de usuarios en cron.allow, sin crear un archivo cron.deny, tendr· el mismo efecto que haberlo creado con la palabra ALL. Esto quiere decir que una vez creado cron.allow con un solo usuario, siempre se tendr·n que especificar los dem·s usuarios que se quiere usen cron, en este archivo.
+Si no existe el archivo cron.allow ni el archivo cron.deny, en teor√≠a el uso de cron esta entonces sin restricciones de usuario. Si se a√±aden nombres de usuarios en cron.allow, sin crear un archivo cron.deny, tendr√° el mismo efecto que haberlo creado con la palabra ALL. Esto quiere decir que una vez creado cron.allow con un solo usuario, siempre se tendr√°n que especificar los dem√°s usuarios que se quiere usen cron, en este archivo.
 
-Espero que este pequeÒo manual sobre cron te sea de utilidad, por favor, si encuentras alg˙n error, h·zmelo saber para corregirlo, gracias.
+Espero que este peque√±o manual sobre cron te sea de utilidad, por favor, si encuentras alg√∫n error, h√°zmelo saber para corregirlo, gracias.
